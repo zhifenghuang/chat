@@ -3,16 +3,11 @@ package com.alsc.chat.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -41,9 +36,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
-/**
- * 应用首界面
- */
+
 public abstract class BaseActivity extends AppCompatActivity implements OnHttpErrorListener {
 
     private DisplayMetrics mDisplaymetrics;
