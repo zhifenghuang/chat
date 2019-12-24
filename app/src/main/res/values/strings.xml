@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">chat</string>
+
+    <string name="chat_chat">聊天</string>
+    <string name="chat_friends">好友</string>
+
+</resources>
