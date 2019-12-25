@@ -41,7 +41,9 @@ public class FriendListFragment extends BaseFragment {
 
     public void onResume() {
         super.onResume();
-        getFriendFromServer();
+        if(getAdapter().getItemCount()==0) {
+            getFriendFromServer();
+        }
     }
 
     @Override
