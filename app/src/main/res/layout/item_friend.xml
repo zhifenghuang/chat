@@ -4,13 +4,12 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:paddingRight="16dp">
+    android:paddingLeft="17dp">
 
     <TextView
         android:id="@+id/tvLetter"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingLeft="17dp"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
         android:text="A"
@@ -19,29 +18,24 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:paddingLeft="31dp"
-        android:paddingTop="11dp"
-        android:paddingBottom="11dp">
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/ivAvater"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
 
         <TextView
             android:id="@+id/tvName"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:text=""
+            android:gravity="center_vertical"
+            android:lines="1"
+            android:paddingLeft="15dp"
             android:textColor="@color/color_00_00_00"
             android:textSize="13sp" />
 
-
     </LinearLayout>
-
-
-    <View
-        android:id="@+id/paddingView"
-        android:layout_width="wrap_content"
-        android:layout_height="15dp" />
-
-
 </LinearLayout>

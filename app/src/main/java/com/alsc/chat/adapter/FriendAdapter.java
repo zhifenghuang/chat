@@ -6,7 +6,7 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
 public class FriendAdapter extends BaseQuickAdapter<UserBean, BaseViewHolder> {
-    public FriendAdapter(int layoutResId) {
+    public FriendAdapter() {
         super(R.layout.item_friend);
     }
 

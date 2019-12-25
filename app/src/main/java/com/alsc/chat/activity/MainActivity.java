@@ -10,7 +10,7 @@ import androidx.fragment.app.FragmentTransaction;
 
 import com.alsc.chat.R;
 import com.alsc.chat.fragment.BaseFragment;
-import com.alsc.chat.fragment.ChatFragment;
+import com.alsc.chat.fragment.ChatListFragment;
 import com.alsc.chat.fragment.FriendListFragment;
 import com.alsc.chat.fragment.LoginFragment;
 import com.alsc.chat.manager.DataManager;
@@ -35,7 +35,7 @@ public class MainActivity extends BaseActivity {
 
     private void initFragments() {
         mBaseFragment = new ArrayList<>();
-        mBaseFragment.add(new ChatFragment());
+        mBaseFragment.add(new ChatListFragment());
         mBaseFragment.add(new FriendListFragment());
     }
 
