@@ -26,9 +26,6 @@ public class MainActivity extends BaseActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if (DataManager.getInstance().getUser() == null) {
-            gotoPager(LoginFragment.class);
-        }
         initFragments();
         initViews();
     }
@@ -56,6 +53,13 @@ public class MainActivity extends BaseActivity {
                     resetBottomBar(tag);
                 }
             });
+        }
+    }
+
+    public void onResume() {
+        super.onResume();
+        if (DataManager.getInstance().getUser() == null) {
+            gotoPager(LoginFragment.class);
         }
     }
 

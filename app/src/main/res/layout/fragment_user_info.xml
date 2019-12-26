@@ -17,9 +17,48 @@
 
     <ImageView
         android:id="@+id/ivAvater"
-        android:layout_width="50dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_below="@id/ivBack" />
+
+    <TextView
+        android:id="@+id/tvMemo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/ivBack"
+        android:layout_toRightOf="@id/ivAvater"
+        android:paddingLeft="10dp"
+        android:textColor="@color/color_00_00_00"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/tvNick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvMemo"
+        android:layout_toRightOf="@id/ivAvater"
+        android:paddingLeft="10dp"
+        android:textColor="@color/color_00_00_00"
+        android:textSize="15sp" />
+
+    <Button
+        android:id="@+id/btnUpdateMemo"
+        android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_below="@id/ivBack"/>
+        android:layout_below="@id/ivAvater"
+        android:layout_marginTop="80dp"
+        android:text="修改备注"
+        android:textColor="@color/color_00_00_00"
+        android:textSize="15sp" />
+
+
+    <Button
+        android:id="@+id/btnOpeartor"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_below="@id/btnUpdateMemo"
+        android:layout_marginTop="50dp"
+        android:textColor="@color/color_00_00_00" />
 
 
 </RelativeLayout>

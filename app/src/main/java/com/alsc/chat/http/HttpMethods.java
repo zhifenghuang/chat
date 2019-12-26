@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.alsc.chat.bean.UserBean;
 import com.alsc.chat.manager.DataManager;
+import com.alsc.chat.utils.Constants;
 import com.alsc.chat.utils.NetUtil;
 import com.google.gson.GsonBuilder;
 import com.jakewharton.retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
@@ -109,11 +110,12 @@ public class HttpMethods {
     }
 
     private String getBaseUrl() {
-        return "http://118.178.16.240/";
+        return Constants.BASE_URL + "/";
     }
 
     /**
      * 登录
+     *
      * @param account  账号
      * @param password 密码
      * @param observer
@@ -127,6 +129,7 @@ public class HttpMethods {
 
     /**
      * 联系人列表
+     *
      * @param observer
      */
     public void getFriends(HttpObserver observer) {
@@ -138,9 +141,10 @@ public class HttpMethods {
 
     /**
      * 申请添加联系人
+     *
      * @param contactId 添加的联系人Id
-     * @param memo 备注
-     * @param remark 申请留言
+     * @param memo      备注
+     * @param remark    申请留言
      * @param observer
      */
     public void addContact(String contactId, String memo, String remark, HttpObserver observer) {
@@ -153,7 +157,8 @@ public class HttpMethods {
 
     /**
      * 查找指定联系人
-     * @param mobile 用户名
+     *
+     * @param mobile   用户名
      * @param observer
      */
     public void searchContact(String mobile, HttpObserver observer) {
@@ -164,9 +169,10 @@ public class HttpMethods {
 
     /**
      * 同意或拒绝添加联系人
+     *
      * @param contactId 申请用户ID
-     * @param status 1同意2拒绝3忽略
-     * @param memo 备注信息
+     * @param status    1同意2拒绝3忽略
+     * @param memo      备注信息
      * @param observer
      */
     public void replayContact(String contactId, String status, String memo, HttpObserver observer) {
@@ -179,6 +185,7 @@ public class HttpMethods {
 
     /**
      * 待处理联系人申请列表
+     *
      * @param observer
      */
     public void reviewContact(HttpObserver observer) {
@@ -189,7 +196,8 @@ public class HttpMethods {
 
     /**
      * 退出群
-     * @param groupId 群ID
+     *
+     * @param groupId  群ID
      * @param observer
      */
     public void exitGroup(String groupId, HttpObserver observer) {
@@ -200,6 +208,7 @@ public class HttpMethods {
 
     /**
      * 获取群好友列表
+     *
      * @param contactId 群ID
      * @param observer
      */
@@ -211,10 +220,11 @@ public class HttpMethods {
 
     /**
      * 修改群聊信息
-     * @param contactId 群ID
-     * @param name 群名称
-     * @param ownerId 群所有者ID（默认0为不修改)
-     * @param notice 群公告
+     *
+     * @param contactId    群ID
+     * @param name         群名称
+     * @param ownerId      群所有者ID（默认0为不修改)
+     * @param notice       群公告
      * @param introduction 群介绍
      * @param observer
      */
@@ -230,15 +240,16 @@ public class HttpMethods {
 
     /**
      * 创建群聊
-     * @param name 群聊名称
+     *
+     * @param name     群聊名称
      * @param users
      * @param observer
      */
     public void createGroup(String name, ArrayList<UserBean> users, HttpObserver observer) {
         HttpService httpService = mRetrofit.create(HttpService.class);
-        HashMap<String,Object> map=new HashMap<>();
-        map.put("name",name);
-        map.put("users",users);
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name", name);
+        map.put("users", users);
         Observable observable = httpService.createGroup(map);
         toSubscribe(observable, observer);
     }

@@ -192,6 +192,15 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * 跳转到新的界面
      *
      * @param pagerClass
+     */
+    public void gotoPager(final Class<?> pagerClass) {
+        gotoPager(pagerClass, null);
+    }
+
+    /**
+     * 跳转到新的界面
+     *
+     * @param pagerClass
      * @param bundle
      */
     public void gotoPager(final Class<?> pagerClass, final Bundle bundle) {

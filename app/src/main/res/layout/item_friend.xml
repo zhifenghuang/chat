@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         android:paddingTop="2dp"
         android:paddingBottom="2dp"
-        android:text="A"
+        android:visibility="gone"
         android:textColor="@color/color_00_00_00"
         android:textSize="14sp" />
 
@@ -24,7 +24,7 @@
         <ImageView
             android:id="@+id/ivAvater"
             android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_height="50dp"/>
 
         <TextView
             android:id="@+id/tvName"
