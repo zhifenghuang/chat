@@ -34,7 +34,7 @@ public class FriendAdapter extends BaseQuickAdapter<UserBean, BaseViewHolder> {
         } else {
             helper.setGone(R.id.ivAvater, true)
                     .setText(R.id.tvName, item.getNickName());
-            Utils.loadImage(mContext, 0, Constants.BASE_URL + item.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvater));
+            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + item.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvater));
         }
     }
 }

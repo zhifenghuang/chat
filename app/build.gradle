@@ -39,4 +39,5 @@ dependencies {
 
     api 'com.github.CymChad:BaseRecyclerViewAdapterHelper:2.9.34'
     api 'androidx.recyclerview:recyclerview:1.1.0'
+    api 'org.java-websocket:Java-WebSocket:1.4.0'
 }

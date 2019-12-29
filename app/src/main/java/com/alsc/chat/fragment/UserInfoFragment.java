@@ -1,5 +1,6 @@
 package com.alsc.chat.fragment;
 
+import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -25,7 +26,7 @@ public class UserInfoFragment extends BaseFragment {
         setText(R.id.tvMemo, TextUtils.isEmpty(mUserInfo.getMemo()) ? mUserInfo.getNickName() : mUserInfo.getMemo());
         setText(R.id.tvNick, mUserInfo.getNickName());
         setViewsOnClickListener(R.id.btnUpdateMemo, R.id.btnOpeartor);
-        Utils.loadImage(getActivity(), 0, Constants.BASE_URL + mUserInfo.getAvatarUrl(), (ImageView) view.findViewById(R.id.ivAvater));
+        Utils.loadImage(getActivity(), R.mipmap.ic_launcher, Constants.BASE_URL + mUserInfo.getAvatarUrl(), (ImageView) view.findViewById(R.id.ivAvater));
     }
 
     @Override
@@ -35,6 +36,14 @@ public class UserInfoFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()){
+            case R.id.btnUpdateMemo:
+                break;
+            case R.id.btnOpeartor:
+                Bundle bundle=new Bundle();
+                bundle.putSerializable(Constants.BUNDLE_EXTRA,mUserInfo);
+                gotoPager(ChatFragment.class,bundle);
+                break;
+        }
     }
 }

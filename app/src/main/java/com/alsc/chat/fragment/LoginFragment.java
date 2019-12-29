@@ -3,6 +3,7 @@ package com.alsc.chat.fragment;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.alsc.chat.BaseApplication;
 import com.alsc.chat.R;
 import com.alsc.chat.activity.BaseActivity;
 import com.alsc.chat.bean.UserBean;
@@ -40,6 +41,7 @@ public class LoginFragment extends BaseFragment {
                     @Override
                     public void onNext(UserBean userBean, String msg) {
                         DataManager.getInstance().saveUser(userBean);
+                        ((BaseApplication) getActivity().getApplication()).initWebSocket(userBean.getToken());
                         goBack();
                     }
                 }, getActivity(), (BaseActivity) getActivity()));

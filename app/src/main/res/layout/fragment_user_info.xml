@@ -58,6 +58,7 @@
         android:layout_height="50dp"
         android:layout_below="@id/btnUpdateMemo"
         android:layout_marginTop="50dp"
+        android:text="聊天"
         android:textColor="@color/color_00_00_00" />
 
 
