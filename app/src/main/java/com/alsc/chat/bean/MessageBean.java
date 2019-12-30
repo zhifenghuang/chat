@@ -4,7 +4,9 @@ import android.content.ContentValues;
 
 import com.alsc.chat.db.DatabaseOperate;
 import com.alsc.chat.db.IDBItemOperation;
+import com.google.gson.Gson;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class MessageBean extends IDBItemOperation {
@@ -146,6 +148,19 @@ public class MessageBean extends IDBItemOperation {
         return "message";
     }
 
+    public String toJson(){
+        HashMap<String,Object> map=new HashMap<>();
+        if(msgType==1){
+            map.put("cmd",cmd);
+            map.put("fromId",fromId);
+            map.put("toId",toId);
+            map.put("msgType",msgType);
+            map.put("content",content);
+            map.put("createTime",createTime);
+        }
+        return new Gson().toJson(map);
+    }
+
     /**
      * 消息已读成功
      */
@@ -177,11 +192,11 @@ public class MessageBean extends IDBItemOperation {
         values.put("toId", toId);
         values.put("sendStatus", sendStatus);
         values.put("receiveStatus", receiveStatus);
-        values.put("content", fromId);
-        values.put("url", toId);
-        values.put("createTime", sendStatus);
-        values.put("expire", receiveStatus);
-        values.put("isdel", receiveStatus);
+        values.put("content", content);
+        values.put("url", url);
+        values.put("createTime", createTime);
+        values.put("expire", expire);
+        values.put("isdel", 0);
         return values;
     }
 }

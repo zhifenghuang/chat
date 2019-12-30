@@ -1,6 +1,11 @@
 package com.alsc.chat.db;
 
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+
+import com.alsc.chat.BaseApplication;
+import com.alsc.chat.bean.MessageBean;
+
 import java.util.ArrayList;
 
 /**
@@ -16,22 +21,28 @@ public class DatabaseOperate extends DBOperate {
 
     private static DatabaseOperate mDBManager = null;
 
+    private static Context mContext;
+
 
     private DatabaseOperate(SQLiteDatabase db) {
         super(db);
     }
 
+    public static void setContext(Context context){
+        mContext= context;
+    }
+
     public static DatabaseOperate getInstance() {
         if (mDBManager == null) {
             synchronized (TAG) {
-//                if (mDBManager == null) {
-//                    DatabaseHelper databaseHelper = new DatabaseHelper(BaseApplication.getAppContext(), DB_NAME);
-//                    SQLiteDatabase db = databaseHelper.getWritableDatabase();
-//                    mDBManager = new DatabaseOperate(db);
-//
-//                    // ---------  升级数据库
-//                    mDBManager.upgradeDb();
-//                }
+                if (mDBManager == null) {
+                    DatabaseHelper databaseHelper = new DatabaseHelper(mContext, DB_NAME);
+                    SQLiteDatabase db = databaseHelper.getWritableDatabase();
+                    mDBManager = new DatabaseOperate(db);
+
+                    // ---------  升级数据库
+                    mDBManager.upgradeDb();
+                }
             }
         }
         return mDBManager;
@@ -48,6 +59,16 @@ public class DatabaseOperate extends DBOperate {
     public <T extends IDBItemOperation> ArrayList<T> getAll(String tableName, Class cls) {
         String sql = "select * from " + tableName + " where isdel=0";
         ArrayList<T> list = mDBManager.getList(sql, cls);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        return list;
+    }
+
+    public ArrayList<MessageBean> getUserChatMsg(long myId,long chatUserId) {
+        String sql = String.format("select * from message where (fromId=%d and toId=%d) or (fromId=%d and toId=%d)",
+                myId,chatUserId,chatUserId,myId);
+        ArrayList<MessageBean> list = mDBManager.getList(sql, MessageBean.class);
         if (list == null) {
             list = new ArrayList<>();
         }

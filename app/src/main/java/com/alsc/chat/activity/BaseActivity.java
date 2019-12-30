@@ -23,9 +23,7 @@ import androidx.fragment.app.FragmentManager;
 import com.alsc.chat.R;
 import com.alsc.chat.fragment.BaseFragment;
 import com.alsc.chat.fragment.MyDialogFragment;
-import com.alsc.chat.http.HttpMethods;
 import com.alsc.chat.http.OnHttpErrorListener;
-import com.alsc.chat.manager.Preferences;
 import com.alsc.chat.utils.NetUtil;
 import com.alsc.chat.utils.Utils;
 import org.json.JSONException;
@@ -56,8 +54,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        HttpMethods.getInstance().setContext(this);
-        Preferences.getInstacne().setContext(this);
         /*
          * 这里判断是否从splashActivity过来，是的话当作从后台到前台处理
          */

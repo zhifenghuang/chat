@@ -24,6 +24,7 @@ public class FriendListFragment extends BaseFragment {
 
     private FriendAdapter mAdapter;
 
+    private ArrayList<UserBean> mFriendList;
 
     @Override
     protected int getLayoutId() {
@@ -37,7 +38,11 @@ public class FriendListFragment extends BaseFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         getAdapter().bindToRecyclerView(recyclerView);
-        getAdapter().setNewData(getNewList(DataManager.getInstance().getFriends()));
+        mFriendList=DataManager.getInstance().getFriends();
+        getAdapter().setNewData(getNewList(mFriendList));
+        if(mFriendList!=null && !mFriendList.isEmpty()) {
+            getFriendFromServer();
+        }
     }
 
     private FriendAdapter getAdapter() {
@@ -65,7 +70,7 @@ public class FriendListFragment extends BaseFragment {
 
     public void onResume() {
         super.onResume();
-        if (getAdapter().getItemCount() <= 3) {
+        if (mFriendList==null || mFriendList.isEmpty()) {
             getFriendFromServer();
         }
     }
@@ -89,6 +94,7 @@ public class FriendListFragment extends BaseFragment {
             @Override
             public void onNext(ArrayList<UserBean> list, String msg) {
                 DataManager.getInstance().saveFriends(list);
+                mFriendList=list;
                 if (getView() != null) {
                     getAdapter().setNewData(getNewList(list));
                 }
