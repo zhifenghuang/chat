@@ -1,18 +1,68 @@
 package com.alsc.chat.bean;
 
-import java.io.Serializable;
+import android.content.ContentValues;
 
-public class MessageBean implements Serializable {
+import com.alsc.chat.db.DatabaseOperate;
+import com.alsc.chat.db.IDBItemOperation;
+
+import java.util.UUID;
+
+public class MessageBean extends IDBItemOperation {
 
     private int cmd;
+    private String messageId;
     private long fromId;
     private long toId;
-    private int msgType;
+    private int msgType;   //0表示文字消息，
     private String content;
     private String url;
     private Object fileInfo;
     private int status;
     private long expire;
+    private long createTime;
+    private int sendStatus;
+    private int receiveStatus;
+
+    public MessageBean() {
+        messageId = UUID.randomUUID().toString();
+        createTime = System.currentTimeMillis();
+    }
+
+    public boolean isMySendMsg(long myUserId) {
+        return fromId == myUserId;
+    }
+
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    public int getSendStatus() {
+        return sendStatus;
+    }
+
+    public void setSendStatus(int sendStatus) {
+        this.sendStatus = sendStatus;
+    }
+
+    public int getReceiveStatus() {
+        return receiveStatus;
+    }
+
+    public void setReceiveStatus(int receiveStatus) {
+        this.receiveStatus = receiveStatus;
+    }
 
     public Object getFileInfo() {
         return fileInfo;
@@ -84,5 +134,54 @@ public class MessageBean implements Serializable {
 
     public void setExpire(long expire) {
         this.expire = expire;
+    }
+
+    @Override
+    public String getPrimaryKeyName() {
+        return "messageId";
+    }
+
+    @Override
+    public String getTableName() {
+        return "message";
+    }
+
+    /**
+     * 消息已读成功
+     */
+    public void sureReceiveStatus() {
+        receiveStatus = 1;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getPrimaryKeyName(), messageId);
+        contentValues.put("receiveStatus", receiveStatus);
+        DatabaseOperate.getInstance().update(this, contentValues);
+    }
+
+    /**
+     * 消息已发送成功
+     */
+    public void sureSendMsg() {
+        sendStatus = 1;
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(getPrimaryKeyName(), messageId);
+        contentValues.put("sendStatus", sendStatus);
+        DatabaseOperate.getInstance().update(this, contentValues);
+    }
+
+    @Override
+    public ContentValues getValues() {
+        ContentValues values = new ContentValues();
+        values.put("messageId", messageId);
+        values.put("msgType", msgType);
+        values.put("fromId", fromId);
+        values.put("toId", toId);
+        values.put("sendStatus", sendStatus);
+        values.put("receiveStatus", receiveStatus);
+        values.put("content", fromId);
+        values.put("url", toId);
+        values.put("createTime", sendStatus);
+        values.put("expire", receiveStatus);
+        values.put("isdel", receiveStatus);
+        return values;
     }
 }
