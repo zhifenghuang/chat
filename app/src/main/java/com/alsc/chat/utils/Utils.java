@@ -422,6 +422,12 @@ public class Utils {
         return sdf.format(date);
     }
 
+    public static String longToDate2(long time) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        Date date = new Date(time);
+        return sdf.format(date);
+    }
+
     public static long dateStrToLong2(String DateTime) {
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");

@@ -28,8 +28,8 @@ public class DatabaseOperate extends DBOperate {
         super(db);
     }
 
-    public static void setContext(Context context){
-        mContext= context;
+    public static void setContext(Context context) {
+        mContext = context;
     }
 
     public static DatabaseOperate getInstance() {
@@ -65,9 +65,9 @@ public class DatabaseOperate extends DBOperate {
         return list;
     }
 
-    public ArrayList<MessageBean> getUserChatMsg(long myId,long chatUserId) {
-        String sql = String.format("select * from message where (fromId=%d and toId=%d) or (fromId=%d and toId=%d)",
-                myId,chatUserId,chatUserId,myId);
+    public ArrayList<MessageBean> getUserChatMsg(long myId, long chatUserId) {
+        String sql = String.format("select * from message where owerId=%d and ((fromId=%d and toId=%d) or (fromId=%d and toId=%d))",
+                myId, myId, chatUserId, chatUserId, myId);
         ArrayList<MessageBean> list = mDBManager.getList(sql, MessageBean.class);
         if (list == null) {
             list = new ArrayList<>();
@@ -76,5 +76,13 @@ public class DatabaseOperate extends DBOperate {
     }
 
 
+    public ArrayList<MessageBean> getUserChatList(long myId) {
+        String sql = String.format("select tag,fromId,toId,content,createTime from(select * from message where owerId=%d order by createTime desc) b group by b.tag", myId);
+        ArrayList<MessageBean> list = mDBManager.getList(sql, MessageBean.class);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        return list;
+    }
 
 }

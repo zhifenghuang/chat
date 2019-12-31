@@ -42,7 +42,7 @@ public class ChatFragment extends BaseFragment {
         mMyInfo = DataManager.getInstance().getUser();
         mChatUser = (UserBean) getArguments().getSerializable(Constants.BUNDLE_EXTRA);
 
-        setText(R.id.tvTitle,mChatUser.getNickName());
+        setText(R.id.tvTitle, mChatUser.getNickName());
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -52,9 +52,10 @@ public class ChatFragment extends BaseFragment {
         initMsgs();
     }
 
-    private void initMsgs(){
-        ArrayList<MessageBean> list=DatabaseOperate.getInstance().getUserChatMsg(mMyInfo.getUserId(),mChatUser.getContactId());
+    private void initMsgs() {
+        ArrayList<MessageBean> list = DatabaseOperate.getInstance().getUserChatMsg(mMyInfo.getUserId(), mChatUser.getContactId());
         getAdapter().setNewData(list);
+        scrollBottom();
 //        if(list==null || list.isEmpty()){
 //            return;
 //        }
@@ -98,15 +99,30 @@ public class ChatFragment extends BaseFragment {
             msg.setMsgType(1);
             msg.setContent(text);
             WebSocketHandler.getDefault().send(msg.toJson());
-            setText(R.id.etChat,"");
+            setText(R.id.etChat, "");
             DatabaseOperate.getInstance().insert(msg);
-            getAdapter().addData(msg);
+            EventBus.getDefault().post(msg);
         }
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveMsg(MessageBean message) {
+        if (getView() != null && message != null) {
+            getAdapter().addData(message);
+            scrollBottom();
+        }
+    }
 
+    private void scrollBottom() {
+        if (getView() != null && getAdapter().getItemCount() > 0) {
+            final RecyclerView recyclerView = getView().findViewById(R.id.recyclerView);
+            recyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    recyclerView.smoothScrollToPosition(getAdapter().getItemCount() - 1);
+                }
+            }, 100);
+        }
     }
 
     @Override

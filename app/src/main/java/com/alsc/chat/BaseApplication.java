@@ -20,6 +20,10 @@ import com.zhangke.websocket.WebSocketManager;
 import com.zhangke.websocket.WebSocketSetting;
 import com.zhangke.websocket.response.ErrorResponse;
 
+import org.greenrobot.eventbus.EventBus;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 
 public class BaseApplication extends Application {
@@ -34,22 +38,22 @@ public class BaseApplication extends Application {
         Preferences.getInstacne().setContext(this);
 
 
-        String token= DataManager.getInstance().getToken();
-        if(!TextUtils.isEmpty(token)){
+        String token = DataManager.getInstance().getToken();
+        if (!TextUtils.isEmpty(token)) {
             initWebSocket(token);
         }
     }
 
-    public void initWebSocket(String token){
+    public void initWebSocket(String token) {
         WebSocketSetting setting = new WebSocketSetting();
         //连接地址，必填，例如 wss://echo.websocket.org
-        setting.setConnectUrl(String.format(Constants.CHAT_SOCKET_URL,token));//必填
+        setting.setConnectUrl(String.format(Constants.CHAT_SOCKET_URL, token));//必填
 
         //设置连接超时时间
         setting.setConnectTimeout(15 * 1000);
 
         //设置心跳间隔时间
-        setting.setConnectionLostTimeout(30);
+        setting.setConnectionLostTimeout(0);
 
         //设置断开后的重连次数，可以设置的很大，不会有什么性能上的影响
         setting.setReconnectFrequency(60);
@@ -73,53 +77,69 @@ public class BaseApplication extends Application {
     private SocketListener socketListener = new SimpleListener() {
         @Override
         public void onConnected() {
-            Log.e("aaaaaaaaa","onConnected");
+            Log.e("aaaaaaaaa", "onConnected");
         }
 
         @Override
         public void onConnectFailed(Throwable e) {
             if (e != null) {
-                Log.e("aaaaaaaaa","onConnectFailed:" + e.toString());
+                Log.e("aaaaaaaaa", "onConnectFailed:" + e.toString());
             } else {
-                Log.e("aaaaaaaaa","onConnectFailed:null");
+                Log.e("aaaaaaaaa", "onConnectFailed:null");
             }
         }
 
         @Override
         public void onDisconnect() {
-            Log.e("aaaaaaaaa","onDisconnect");
+            Log.e("aaaaaaaaa", "onDisconnect");
         }
 
         @Override
         public void onSendDataError(ErrorResponse errorResponse) {
-            Log.e("aaaaaaaaa","aaaaa:"+errorResponse.getDescription());
+            Log.e("aaaaaaaaa", "aaaaa:" + errorResponse.getDescription());
             errorResponse.release();
         }
 
         @Override
         public <T> void onMessage(String message, T data) {
-            Log.e("aaaaaaaaa","aaaaabbb:"+message);
-            if(TextUtils.isEmpty(message)){
+            Log.e("aaaaaaaaa", "aaaaabbb:" + message);
+            if (TextUtils.isEmpty(message)) {
                 return;
             }
-            MessageResponse response=new Gson().fromJson(message,MessageResponse.class);
-            if(response!=null){
-                ArrayList<MessageBean> list=response.getMessages();
-                if(list==null || list.isEmpty()){
-                    return;
-                }
-                switch (response.getCmd()){
-                    case 1010:  //离线群组消息
-
-                        break;
-                    case 1020:  //离线个人消息
-                        for(MessageBean bean:list){
-                            DatabaseOperate.getInstance().insertOrUpdate(bean);
+            try {
+                JSONObject object = new JSONObject(message);
+                int cmd = object.optInt("cmd");
+                if (cmd == 2000) {
+                    MessageBean bean = new Gson().fromJson(message, MessageBean.class);
+                    DatabaseOperate.getInstance().insertOrUpdate(bean);
+                    EventBus.getDefault().post(bean);
+                } else if (cmd == 1000) {
+                    JSONObject jb = new JSONObject();
+                    jb.put("cmd", 1000);
+                    WebSocketHandler.getDefault().send(jb.toString());
+                } else if (cmd == 1010 || cmd == 1020) {
+                    MessageResponse response = new Gson().fromJson(message, MessageResponse.class);
+                    if (response != null) {
+                        ArrayList<MessageBean> list = response.getMessages();
+                        if (list == null || list.isEmpty()) {
+                            return;
                         }
-                        break;
+                        switch (response.getCmd()) {
+                            case 1010:  //离线群组消息
+                                break;
+                            case 1020:  //离线个人消息
+                                for (MessageBean bean : list) {
+                                    DatabaseOperate.getInstance().insertOrUpdate(bean);
+                                }
+                                break;
 
+                        }
+                    }
                 }
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
+
         }
     };
 }

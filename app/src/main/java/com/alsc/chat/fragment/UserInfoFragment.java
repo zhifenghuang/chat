@@ -36,13 +36,14 @@ public class UserInfoFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btnUpdateMemo:
                 break;
             case R.id.btnOpeartor:
-                Bundle bundle=new Bundle();
-                bundle.putSerializable(Constants.BUNDLE_EXTRA,mUserInfo);
-                gotoPager(ChatFragment.class,bundle);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable(Constants.BUNDLE_EXTRA, mUserInfo);
+                gotoPager(ChatFragment.class, bundle);
+                goBack();
                 break;
         }
     }

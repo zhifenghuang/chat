@@ -4,6 +4,7 @@ import android.content.ContentValues;
 
 import com.alsc.chat.db.DatabaseOperate;
 import com.alsc.chat.db.IDBItemOperation;
+import com.alsc.chat.manager.DataManager;
 import com.google.gson.Gson;
 
 import java.util.HashMap;
@@ -148,15 +149,15 @@ public class MessageBean extends IDBItemOperation {
         return "message";
     }
 
-    public String toJson(){
-        HashMap<String,Object> map=new HashMap<>();
-        if(msgType==1){
-            map.put("cmd",cmd);
-            map.put("fromId",fromId);
-            map.put("toId",toId);
-            map.put("msgType",msgType);
-            map.put("content",content);
-            map.put("createTime",createTime);
+    public String toJson() {
+        HashMap<String, Object> map = new HashMap<>();
+        if (msgType == 1) {
+            map.put("cmd", cmd);
+            map.put("fromId", fromId);
+            map.put("toId", toId);
+            map.put("msgType", msgType);
+            map.put("content", content);
+            map.put("createTime", createTime);
         }
         return new Gson().toJson(map);
     }
@@ -185,6 +186,7 @@ public class MessageBean extends IDBItemOperation {
 
     @Override
     public ContentValues getValues() {
+        UserBean myInfo = DataManager.getInstance().getUser();
         ContentValues values = new ContentValues();
         values.put("messageId", messageId);
         values.put("msgType", msgType);
@@ -197,6 +199,10 @@ public class MessageBean extends IDBItemOperation {
         values.put("createTime", createTime);
         values.put("expire", expire);
         values.put("isdel", 0);
+        values.put("expire", expire);
+        values.put("owerId", myInfo.getUserId());
+        String tag = fromId < toId ? (fromId + "_" + toId) : (toId + "_" + fromId);
+        values.put("tag", tag);
         return values;
     }
 }

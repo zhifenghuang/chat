@@ -24,7 +24,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "url text," +
                 "createTime long," +
                 "expire long," +
-                "isdel byte" +
+                "isdel byte," +
+                "owerId long,"+  //消息所属id
+                "tag varchar(100)"+  //两者id组合，用来做group by
                 ")";
         db.execSQL(sql);
     }
