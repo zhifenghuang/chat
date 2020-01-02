@@ -19,6 +19,8 @@ public class UserBean implements Serializable {
     private String memo;
     private int status;
 
+    private boolean isCheck;
+
     public int getStatus() {
         return status;
     }
@@ -121,5 +123,13 @@ public class UserBean implements Serializable {
 
     public void setMemo(String memo) {
         this.memo = memo;
+    }
+
+    public boolean isCheck() {
+        return isCheck;
+    }
+
+    public void setCheck(boolean check) {
+        isCheck = check;
     }
 }

@@ -70,7 +70,7 @@ public interface HttpService {
                                                     @Part("introduction") RequestBody introduction);
 
     /*
-    获取群好友列表
+    创建群
     */
     @POST("api/v1/group/create")
     Observable<BasicResponse<UserBean>> createGroup(@Body HashMap<String,Object> map);

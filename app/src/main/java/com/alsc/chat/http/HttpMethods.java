@@ -245,11 +245,11 @@ public class HttpMethods {
      * @param users
      * @param observer
      */
-    public void createGroup(String name, ArrayList<UserBean> users, HttpObserver observer) {
+    public void createGroup(String name, ArrayList<Long> users, HttpObserver observer) {
         HttpService httpService = mRetrofit.create(HttpService.class);
         HashMap<String, Object> map = new HashMap<>();
         map.put("name", name);
-        map.put("users", users);
+        map.put("userIds", users);
         Observable observable = httpService.createGroup(map);
         toSubscribe(observable, observer);
     }

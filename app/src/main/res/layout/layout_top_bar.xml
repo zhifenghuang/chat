@@ -37,5 +37,18 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/tvRight"
+        android:layout_width="wrap_content"
+        android:layout_height="44dp"
+        android:paddingRight="20dp"
+        android:visibility="gone"
+        android:textColor="@color/color_ff_ff_ff"
+        android:textSize="16sp"
+        android:gravity="center"
+        android:text="添加群"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

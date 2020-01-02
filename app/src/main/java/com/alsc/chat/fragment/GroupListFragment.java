@@ -3,6 +3,7 @@ package com.alsc.chat.fragment;
 import android.view.View;
 
 import com.alsc.chat.R;
+import com.alsc.chat.http.HttpMethods;
 
 public class GroupListFragment extends BaseFragment {
     @Override
@@ -12,7 +13,8 @@ public class GroupListFragment extends BaseFragment {
 
     @Override
     protected void onViewCreated(View view) {
-
+        setViewVisible(R.id.tvRight);
+        setViewsOnClickListener(R.id.tvRight);
     }
 
     @Override
@@ -22,6 +24,14 @@ public class GroupListFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.tvRight:
+                gotoPager(AddGroupFragment.class);
+                break;
+        }
+    }
 
+    private void getGroups() {
+        //HttpMethods.getInstance().
     }
 }

@@ -5,13 +5,20 @@
     android:background="@color/color_ff_ff_ff"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/layout_top_bar"/>
+    <include layout="@layout/layout_top_bar" />
+
+    <EditText
+        android:id="@+id/etName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="请输入群名字..."
+        android:layout_marginTop="20dp"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_marginTop="10dp"/>
 
 </LinearLayout>

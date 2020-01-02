@@ -114,9 +114,9 @@ public class BaseApplication extends Application {
                     DatabaseOperate.getInstance().insertOrUpdate(bean);
                     EventBus.getDefault().post(bean);
                 } else if (cmd == 1000) {
-                    JSONObject jb = new JSONObject();
-                    jb.put("cmd", 1000);
-                    WebSocketHandler.getDefault().send(jb.toString());
+//                    JSONObject jb = new JSONObject();
+//                    jb.put("cmd", 1000);
+//                    WebSocketHandler.getDefault().send(jb.toString());
                 } else if (cmd == 1010 || cmd == 1020) {
                     MessageResponse response = new Gson().fromJson(message, MessageResponse.class);
                     if (response != null) {
