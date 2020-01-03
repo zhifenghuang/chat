@@ -1,8 +1,6 @@
 package com.alsc.chat.http;
 
 import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
@@ -17,7 +15,7 @@ import io.reactivex.disposables.Disposable;
  * 用于在Http请求开始时，自动显示一个ProgressDialog
  * 在Http请求结束是，关闭ProgressDialog
  */
-public class HttpObserver<T> implements Observer<T>, ProgressCancelListener {
+public class HttpObserver implements Observer, ProgressCancelListener {
 
     private SubscriberOnNextListener mSubscriberOnNextListener;
     private OnHttpErrorListener mErrorListener;
@@ -124,9 +122,6 @@ public class HttpObserver<T> implements Observer<T>, ProgressCancelListener {
         }
     }
 
-    /**
-     * 取消ProgressDialog的时候，取消对observable的订阅，同时也取消了http请求
-     */
     @Override
     public void onCancelProgress() {
         stop();
@@ -136,18 +131,6 @@ public class HttpObserver<T> implements Observer<T>, ProgressCancelListener {
         if (isShowDialog) {
             mHandler.obtainMessage(DISMISS_PROGRESS_DIALOG).sendToTarget();
         }
-    }
-
-    /**
-     * Check if there is any connectivity
-     *
-     * @param context
-     * @return
-     */
-    public boolean isConnected(Context context) {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo info = cm.getActiveNetworkInfo();
-        return (info != null && info.isConnected());
     }
 
     public void showProgressDialog() {

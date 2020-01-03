@@ -255,7 +255,7 @@ public class HttpMethods {
     }
 
 
-    private <T> void toSubscribe(Observable<T> o, HttpObserver<T> s) {
+    private <T> void toSubscribe(Observable<T> o, HttpObserver s) {
         o.retry(2, new Predicate<Throwable>() {
             @Override
             public boolean test(@NonNull Throwable throwable) throws Exception {
