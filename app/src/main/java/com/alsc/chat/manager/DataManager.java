@@ -3,6 +3,7 @@ package com.alsc.chat.manager;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.alsc.chat.bean.GroupBean;
 import com.alsc.chat.bean.UserBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -61,6 +62,19 @@ public class DataManager {
             return new ArrayList<>();
         }
         return new Gson().fromJson(str, new TypeToken<ArrayList<UserBean>>() {
+        }.getType());
+    }
+
+    public void saveGroups(ArrayList<GroupBean> list) {
+        Preferences.getInstacne().setValues("groups", list == null ? "" : new Gson().toJson(list));
+    }
+
+    public ArrayList<GroupBean> getGroups() {
+        String str = Preferences.getInstacne().getValues("groups", "");
+        if (TextUtils.isEmpty(str)) {
+            return new ArrayList<>();
+        }
+        return new Gson().fromJson(str, new TypeToken<ArrayList<GroupBean>>() {
         }.getType());
     }
 }

@@ -10,12 +10,12 @@ import com.google.gson.Gson;
 import java.util.HashMap;
 import java.util.UUID;
 
-public class MessageBean extends IDBItemOperation {
+public class GroupMessageBean extends IDBItemOperation {
 
     private int cmd;
     private String messageId;
     private long fromId;
-    private long toId;
+    private long groupId;
     private int msgType;   //0表示文字消息，
     private String content;
     private String url;
@@ -26,53 +26,13 @@ public class MessageBean extends IDBItemOperation {
     private int sendStatus;
     private int receiveStatus;
 
-    public MessageBean() {
+    public GroupMessageBean() {
         messageId = UUID.randomUUID().toString();
         createTime = System.currentTimeMillis();
     }
 
     public boolean isMySendMsg(long myUserId) {
         return fromId == myUserId;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
-        this.createTime = createTime;
-    }
-
-    public int getSendStatus() {
-        return sendStatus;
-    }
-
-    public void setSendStatus(int sendStatus) {
-        this.sendStatus = sendStatus;
-    }
-
-    public int getReceiveStatus() {
-        return receiveStatus;
-    }
-
-    public void setReceiveStatus(int receiveStatus) {
-        this.receiveStatus = receiveStatus;
-    }
-
-    public Object getFileInfo() {
-        return fileInfo;
-    }
-
-    public void setFileInfo(Object fileInfo) {
-        this.fileInfo = fileInfo;
     }
 
     public int getCmd() {
@@ -83,6 +43,14 @@ public class MessageBean extends IDBItemOperation {
         this.cmd = cmd;
     }
 
+    public String getMessageId() {
+        return messageId;
+    }
+
+    public void setMessageId(String messageId) {
+        this.messageId = messageId;
+    }
+
     public long getFromId() {
         return fromId;
     }
@@ -91,12 +59,12 @@ public class MessageBean extends IDBItemOperation {
         this.fromId = fromId;
     }
 
-    public long getToId() {
-        return toId;
+    public long getGroupId() {
+        return groupId;
     }
 
-    public void setToId(long toId) {
-        this.toId = toId;
+    public void setGroupId(long groupId) {
+        this.groupId = groupId;
     }
 
     public int getMsgType() {
@@ -123,6 +91,14 @@ public class MessageBean extends IDBItemOperation {
         this.url = url;
     }
 
+    public Object getFileInfo() {
+        return fileInfo;
+    }
+
+    public void setFileInfo(Object fileInfo) {
+        this.fileInfo = fileInfo;
+    }
+
     public int getStatus() {
         return status;
     }
@@ -139,6 +115,30 @@ public class MessageBean extends IDBItemOperation {
         this.expire = expire;
     }
 
+    public long getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(long createTime) {
+        this.createTime = createTime;
+    }
+
+    public int getSendStatus() {
+        return sendStatus;
+    }
+
+    public void setSendStatus(int sendStatus) {
+        this.sendStatus = sendStatus;
+    }
+
+    public int getReceiveStatus() {
+        return receiveStatus;
+    }
+
+    public void setReceiveStatus(int receiveStatus) {
+        this.receiveStatus = receiveStatus;
+    }
+
     @Override
     public String getPrimaryKeyName() {
         return "messageId";
@@ -146,7 +146,7 @@ public class MessageBean extends IDBItemOperation {
 
     @Override
     public String getTableName() {
-        return "message";
+        return "group_message";
     }
 
     public String toJson() {
@@ -155,7 +155,7 @@ public class MessageBean extends IDBItemOperation {
             map.put("cmd", cmd);
             map.put("messageId", messageId);
             map.put("fromId", fromId);
-            map.put("toId", toId);
+            map.put("groupId", groupId);
             map.put("msgType", msgType);
             map.put("content", content);
             map.put("createTime", createTime);
@@ -192,7 +192,7 @@ public class MessageBean extends IDBItemOperation {
         values.put("messageId", messageId);
         values.put("msgType", msgType);
         values.put("fromId", fromId);
-        values.put("toId", toId);
+        values.put("groupId", groupId);
         values.put("sendStatus", sendStatus);
         values.put("receiveStatus", receiveStatus);
         values.put("content", content);
@@ -202,8 +202,6 @@ public class MessageBean extends IDBItemOperation {
         values.put("isdel", 0);
         values.put("expire", expire);
         values.put("owerId", myInfo.getUserId());
-        String tag = fromId < toId ? (fromId + "_" + toId) : (toId + "_" + fromId);
-        values.put("tag", tag);
         return values;
     }
 }

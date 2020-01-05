@@ -29,6 +29,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 "tag varchar(100)"+  //两者id组合，用来做group by
                 ")";
         db.execSQL(sql);
+        sql = "create table group_message(" +   //消息表
+                "messageId varchar(100) primary key," +
+                "msgType int," +
+                "fromId long," +
+                "groupId long," +
+                "sendStatus int," +
+                "receiveStatus int," +
+                "content text," +
+                "url text," +
+                "createTime long," +
+                "expire long," +
+                "isdel byte," +
+                "owerId long"+  //消息所属id
+                ")";
+        db.execSQL(sql);
     }
 
     @Override

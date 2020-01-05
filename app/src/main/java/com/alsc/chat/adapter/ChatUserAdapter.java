@@ -12,7 +12,7 @@ import com.alsc.chat.utils.Utils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
-public class ChatUserAdapter extends BaseQuickAdapter<ChatListFragment.ChatUser, BaseViewHolder> {
+public class ChatUserAdapter extends BaseQuickAdapter<ChatListFragment.ChatBean, BaseViewHolder> {
 
     private Context mContext;
 
@@ -24,10 +24,18 @@ public class ChatUserAdapter extends BaseQuickAdapter<ChatListFragment.ChatUser,
     }
 
     @Override
-    protected void convert(BaseViewHolder helper, ChatListFragment.ChatUser chatUser) {
-        helper.setText(R.id.tvName, chatUser.chatUser.getNickName())
-                .setText(R.id.tvMessage, chatUser.lastMsg.getContent())
-                .setText(R.id.tvTime, Utils.longToDate2(chatUser.lastMsg.getCreateTime()));
-        Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatUser.chatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvater));
+    protected void convert(BaseViewHolder helper, ChatListFragment.ChatBean chatBean) {
+
+        if(chatBean.chatUser!=null) {
+            helper.setText(R.id.tvName, chatBean.chatUser.getNickName())
+                    .setText(R.id.tvMessage, chatBean.lastMsg.getContent())
+                    .setText(R.id.tvTime, Utils.longToDate2(chatBean.lastMsg.getCreateTime()));
+            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.chatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvater));
+        }else{
+            helper.setText(R.id.tvName, chatBean.group.getName())
+                    .setText(R.id.tvMessage, chatBean.lastGroupMsg.getContent())
+                    .setText(R.id.tvTime, Utils.longToDate2(chatBean.lastGroupMsg.getCreateTime()));
+            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.group.getIcon(), (ImageView) helper.getView(R.id.ivAvater));
+        }
     }
 }

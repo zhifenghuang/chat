@@ -21,8 +21,8 @@ public class HttpObserver implements Observer, ProgressCancelListener {
     private OnHttpErrorListener mErrorListener;
     private boolean isShowDialog = true;
     private Context context;
-    public static final int SHOW_PROGRESS_DIALOG = 1;
-    public static final int DISMISS_PROGRESS_DIALOG = 2;
+    private static final int SHOW_PROGRESS_DIALOG = 1;
+    private static final int DISMISS_PROGRESS_DIALOG = 2;
 
     public HttpObserver(SubscriberOnNextListener mSubscriberOnNextListener, Context context, OnHttpErrorListener errorListener) {
         this.mSubscriberOnNextListener = mSubscriberOnNextListener;

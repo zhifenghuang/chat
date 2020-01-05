@@ -4,6 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.alsc.chat.BaseApplication;
+import com.alsc.chat.bean.GroupBean;
+import com.alsc.chat.bean.GroupMessageBean;
 import com.alsc.chat.bean.MessageBean;
 
 import java.util.ArrayList;
@@ -75,10 +77,29 @@ public class DatabaseOperate extends DBOperate {
         return list;
     }
 
+    public ArrayList<GroupMessageBean> getGroupMsg(long myId, long groupId) {
+        String sql = String.format("select * from group_message where owerId=%d and groupId=%d",
+                myId, groupId);
+        ArrayList<GroupMessageBean> list = mDBManager.getList(sql, GroupMessageBean.class);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        return list;
+    }
+
 
     public ArrayList<MessageBean> getUserChatList(long myId) {
         String sql = String.format("select tag,fromId,toId,content,createTime from(select * from message where owerId=%d order by createTime desc) b group by b.tag", myId);
         ArrayList<MessageBean> list = mDBManager.getList(sql, MessageBean.class);
+        if (list == null) {
+            list = new ArrayList<>();
+        }
+        return list;
+    }
+
+    public ArrayList<GroupMessageBean> getChatGroupList(long myId) {
+        String sql = String.format("select groupId,fromId,content,createTime from(select * from group_message where owerId=%d order by createTime desc) b group by b.groupId", myId);
+        ArrayList<GroupMessageBean> list = mDBManager.getList(sql, GroupMessageBean.class);
         if (list == null) {
             list = new ArrayList<>();
         }

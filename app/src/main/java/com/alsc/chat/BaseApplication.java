@@ -1,18 +1,19 @@
 package com.alsc.chat;
 
 import android.app.Application;
+import android.content.ContentValues;
 import android.text.TextUtils;
 import android.util.Log;
-
+import com.alsc.chat.bean.GroupMessageBean;
 import com.alsc.chat.bean.MessageBean;
 import com.alsc.chat.bean.MessageResponse;
-import com.alsc.chat.db.DBOperate;
 import com.alsc.chat.db.DatabaseOperate;
 import com.alsc.chat.http.HttpMethods;
 import com.alsc.chat.manager.DataManager;
 import com.alsc.chat.manager.Preferences;
 import com.alsc.chat.utils.Constants;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import com.zhangke.websocket.SimpleListener;
 import com.zhangke.websocket.SocketListener;
 import com.zhangke.websocket.WebSocketHandler;
@@ -109,30 +110,76 @@ public class BaseApplication extends Application {
             try {
                 JSONObject object = new JSONObject(message);
                 int cmd = object.optInt("cmd");
-                if (cmd == 2000) {
-                    MessageBean bean = new Gson().fromJson(message, MessageBean.class);
-                    DatabaseOperate.getInstance().insertOrUpdate(bean);
-                    EventBus.getDefault().post(bean);
-                } else if (cmd == 1000) {
-//                    JSONObject jb = new JSONObject();
-//                    jb.put("cmd", 1000);
-//                    WebSocketHandler.getDefault().send(jb.toString());
-                } else if (cmd == 1010 || cmd == 1020) {
-                    MessageResponse response = new Gson().fromJson(message, MessageResponse.class);
-                    if (response != null) {
-                        ArrayList<MessageBean> list = response.getMessages();
-                        if (list == null || list.isEmpty()) {
+                switch (cmd) {
+                    case 2000: {//接收消息
+                        MessageBean bean = new Gson().fromJson(message, MessageBean.class);
+                        DatabaseOperate.getInstance().insertOrUpdate(bean);
+                        EventBus.getDefault().post(bean);
+                        break;
+                    }
+                    case 2001: {  //确认消息发送成功
+                        String messageId = object.optString("result");
+                        if (TextUtils.isEmpty(messageId)) {
                             return;
                         }
-                        switch (response.getCmd()) {
-                            case 1010:  //离线群组消息
-                                break;
-                            case 1020:  //离线个人消息
-                                for (MessageBean bean : list) {
-                                    DatabaseOperate.getInstance().insertOrUpdate(bean);
-                                }
-                                break;
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("messageId", messageId);
+                        contentValues.put("sendStatus", 1);
+                        DatabaseOperate.getInstance().update(new MessageBean(), contentValues);
+                        break;
+                    }
 
+                    case 2100: {//接收群消息
+                        GroupMessageBean bean = new Gson().fromJson(message, GroupMessageBean.class);
+                        DatabaseOperate.getInstance().insertOrUpdate(bean);
+                        EventBus.getDefault().post(bean);
+                        break;
+                    }
+                    case 2101: { //确认群消息发送成功
+                        String messageId = object.optString("result");
+                        if (TextUtils.isEmpty(messageId)) {
+                            return;
+                        }
+                        ContentValues contentValues = new ContentValues();
+                        contentValues.put("messageId", messageId);
+                        contentValues.put("sendStatus", 1);
+                        DatabaseOperate.getInstance().update(new GroupMessageBean(), contentValues);
+                        break;
+                    }
+
+                    case 1000: { //发送心跳
+                        JSONObject jb = new JSONObject();
+                        jb.put("cmd", 1000);
+                        WebSocketHandler.getDefault().send(jb.toString());
+                        break;
+                    }
+                    case 1010: {  //离线群组消息
+                        MessageResponse<GroupMessageBean> response = new Gson().fromJson(message, new TypeToken<MessageResponse<GroupMessageBean>>() {
+                        }.getType());
+                        if (response != null) {
+                            ArrayList<GroupMessageBean> list = response.getMessages();
+                            if (list == null || list.isEmpty()) {
+                                return;
+                            }
+                            for (GroupMessageBean bean : list) {
+                                DatabaseOperate.getInstance().insertOrUpdate(bean);
+                            }
+                            break;
+                        }
+                        break;
+                    }
+                    case 1020: {  //离线个人消息
+                        MessageResponse<MessageBean> response = new Gson().fromJson(message, new TypeToken<MessageResponse<MessageBean>>() {
+                        }.getType());
+                        if (response != null) {
+                            ArrayList<MessageBean> list = response.getMessages();
+                            if (list == null || list.isEmpty()) {
+                                return;
+                            }
+                            for (MessageBean bean : list) {
+                                DatabaseOperate.getInstance().insertOrUpdate(bean);
+                            }
+                            break;
                         }
                     }
                 }

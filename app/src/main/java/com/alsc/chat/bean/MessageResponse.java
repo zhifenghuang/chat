@@ -3,9 +3,9 @@ package com.alsc.chat.bean;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-public class MessageResponse implements Serializable {
+public class MessageResponse<T> implements Serializable {
     private int cmd;
-    private ArrayList<MessageBean> messages;
+    private ArrayList<T> messages;
 
     public int getCmd() {
         return cmd;
@@ -15,11 +15,11 @@ public class MessageResponse implements Serializable {
         this.cmd = cmd;
     }
 
-    public ArrayList<MessageBean> getMessages() {
+    public ArrayList<T> getMessages() {
         return messages;
     }
 
-    public void setMessages(ArrayList<MessageBean> messages) {
+    public void setMessages(ArrayList<T> messages) {
         this.messages = messages;
     }
 }

@@ -254,6 +254,13 @@ public class HttpMethods {
         toSubscribe(observable, observer);
     }
 
+    public void getGroups(int currentPage, int pageSize,HttpObserver observer) {
+        HttpService httpService = mRetrofit.create(HttpService.class);
+        Observable observable = httpService.getGroups(RequestBody.create(MediaType.parse("text/plain"), String.valueOf(currentPage))
+                , RequestBody.create(MediaType.parse("text/plain"), String.valueOf(pageSize)));
+        toSubscribe(observable, observer);
+    }
+
 
     private <T> void toSubscribe(Observable<T> o, HttpObserver s) {
         o.retry(2, new Predicate<Throwable>() {

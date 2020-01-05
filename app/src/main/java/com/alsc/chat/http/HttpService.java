@@ -2,6 +2,7 @@ package com.alsc.chat.http;
 
 
 import com.alsc.chat.bean.BasicResponse;
+import com.alsc.chat.bean.GroupBean;
 import com.alsc.chat.bean.UserBean;
 
 import java.util.ArrayList;
@@ -74,4 +75,12 @@ public interface HttpService {
     */
     @POST("api/v1/group/create")
     Observable<BasicResponse<UserBean>> createGroup(@Body HashMap<String,Object> map);
+
+    /*
+我的群组
+ */
+    @Multipart
+    @POST("api/v1/group/mine")
+    Observable<BasicResponse<ArrayList<GroupBean>>> getGroups(@Part("currentPage") RequestBody currentPage,
+                                                              @Part("pageSize") RequestBody pageSize);
 }

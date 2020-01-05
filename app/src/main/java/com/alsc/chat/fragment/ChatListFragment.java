@@ -10,6 +10,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alsc.chat.R;
 import com.alsc.chat.activity.BaseActivity;
 import com.alsc.chat.adapter.ChatUserAdapter;
+import com.alsc.chat.bean.GroupBean;
+import com.alsc.chat.bean.GroupMessageBean;
 import com.alsc.chat.bean.MessageBean;
 import com.alsc.chat.bean.UserBean;
 import com.alsc.chat.db.DatabaseOperate;
@@ -28,9 +30,10 @@ import java.util.ArrayList;
 
 public class ChatListFragment extends BaseFragment {
 
-    ArrayList<ChatUser> mChatUserList;
+    private ArrayList<ChatBean> mChatList;
     private ChatUserAdapter mAdapter;
     private ArrayList<UserBean> mFriendList;
+    private ArrayList<GroupBean> mGroupList;
 
     @Override
     protected int getLayoutId() {
@@ -45,8 +48,9 @@ public class ChatListFragment extends BaseFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         getAdapter().bindToRecyclerView(recyclerView);
-        mChatUserList = new ArrayList<>();
+        mChatList = new ArrayList<>();
         mFriendList = DataManager.getInstance().getFriends();
+        mGroupList = DataManager.getInstance().getGroups();
     }
 
     private ChatUserAdapter getAdapter() {
@@ -56,33 +60,57 @@ public class ChatListFragment extends BaseFragment {
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                     Bundle bundle = new Bundle();
-                    bundle.putSerializable(Constants.BUNDLE_EXTRA, mAdapter.getItem(position).chatUser);
-                    gotoPager(ChatFragment.class, bundle);
+                    ChatBean bean = getAdapter().getItem(position);
+                    if (bean.chatUser != null) {
+                        bundle.putSerializable(Constants.BUNDLE_EXTRA, bean.chatUser);
+                        gotoPager(ChatFragment.class, bundle);
+                    } else {
+                        bundle.putSerializable(Constants.BUNDLE_EXTRA, bean.group);
+                        gotoPager(GroupChatFragment.class, bundle);
+                    }
                 }
             });
         }
         return mAdapter;
     }
 
-    private void getChatUserList() {
+    private void initChatList() {
+        mChatList.clear();
         UserBean myInfo = DataManager.getInstance().getUser();
-        mChatUserList = new ArrayList<>();
         ArrayList<MessageBean> list = DatabaseOperate.getInstance().getUserChatList(myInfo.getUserId());
         if (list != null && !list.isEmpty()) {
             for (MessageBean bean : list) {
                 for (UserBean friend : mFriendList) {
                     if (friend.getContactId() == bean.getToId()
                             || friend.getContactId() == bean.getFromId()) {
-                        ChatUser chatUser = new ChatUser();
-                        chatUser.chatUser = friend;
-                        chatUser.lastMsg = bean;
-                        mChatUserList.add(chatUser);
+                        ChatBean chatBean = new ChatBean();
+                        chatBean.chatUser = friend;
+                        chatBean.lastMsg = bean;
+                        mChatList.add(chatBean);
                         break;
                     }
                 }
             }
         }
-        getAdapter().setNewData(mChatUserList);
+        initGroupChatList(myInfo.getUserId());
+        getAdapter().setNewData(mChatList);
+    }
+
+    private void initGroupChatList(long myId) {
+        ArrayList<GroupMessageBean> list = DatabaseOperate.getInstance().getChatGroupList(myId);
+        if (list != null && !list.isEmpty()) {
+            for (GroupMessageBean bean : list) {
+                for (GroupBean group : mGroupList) {
+                    if (group.getGroupId() == bean.getGroupId()) {
+                        ChatBean chatBean = new ChatBean();
+                        chatBean.group = group;
+                        chatBean.lastGroupMsg = bean;
+                        mChatList.add(chatBean);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     @Override
@@ -97,11 +125,14 @@ public class ChatListFragment extends BaseFragment {
 
     public void onResume() {
         super.onResume();
-        if (mFriendList != null && !mFriendList.isEmpty()) {
-            getChatUserList();
-        } else {
+        if (mFriendList == null || mFriendList.isEmpty()) {
             getFriendFromServer();
         }
+
+        if (mGroupList == null || mGroupList.isEmpty()) {
+            getGroupFromServer();
+        }
+        initChatList();
     }
 
     @Override
@@ -113,21 +144,47 @@ public class ChatListFragment extends BaseFragment {
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onReceiveMsg(MessageBean message) {
         if (getView() != null && message != null) {
-            for (ChatUser user : mChatUserList) {
-                if (user.chatUser.getContactId() == message.getFromId()
-                        || user.chatUser.getContactId() == message.getToId()) {
-                    user.lastMsg = message;
+            for (ChatBean chatBean : mChatList) {
+                if (chatBean.chatUser == null) {
+                    continue;
+                }
+                if (chatBean.chatUser.getContactId() == message.getFromId()
+                        || chatBean.chatUser.getContactId() == message.getToId()) {
+                    chatBean.lastMsg = message;
+                    mChatList.remove(chatBean);
+                    mChatList.add(0, chatBean);
                     getAdapter().notifyDataSetChanged();
                     return;
                 }
             }
-            getChatUserList();
+            initChatList();
         }
     }
 
-    public static class ChatUser {
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiveMsg(GroupMessageBean message) {
+        if (getView() != null && message != null) {
+            for (ChatBean chatBean : mChatList) {
+                if (chatBean.group == null) {
+                    continue;
+                }
+                if (chatBean.group.getGroupId() == message.getGroupId()) {
+                    chatBean.lastGroupMsg = message;
+                    mChatList.remove(chatBean);
+                    mChatList.add(0, chatBean);
+                    getAdapter().notifyDataSetChanged();
+                    return;
+                }
+            }
+            initChatList();
+        }
+    }
+
+    public static class ChatBean {
         public UserBean chatUser;
+        public GroupBean group;
         public MessageBean lastMsg;
+        public GroupMessageBean lastGroupMsg;
     }
 
     private void getFriendFromServer() {
@@ -141,9 +198,27 @@ public class ChatListFragment extends BaseFragment {
                 DataManager.getInstance().saveFriends(list);
                 mFriendList = list;
                 if (getView() != null && mFriendList != null && !mFriendList.isEmpty()) {
-                    getChatUserList();
+                    initChatList();
                 }
             }
         }, getActivity(), (BaseActivity) getActivity()));
+    }
+
+    private void getGroupFromServer() {
+        UserBean userBean = DataManager.getInstance().getUser();
+        if (userBean == null) {
+            return;
+        }
+        HttpMethods.getInstance().getGroups(1, 20,
+                new HttpObserver(new SubscriberOnNextListener<ArrayList<GroupBean>>() {
+                    @Override
+                    public void onNext(ArrayList<GroupBean> list, String msg) {
+                        DataManager.getInstance().saveGroups(list);
+                        mGroupList = list;
+                        if (getView() != null && mGroupList != null && !mGroupList.isEmpty()) {
+                            initChatList();
+                        }
+                    }
+                }, getActivity(), (BaseActivity) getActivity()));
     }
 }
