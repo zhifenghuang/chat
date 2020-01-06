@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.ContentValues;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.alsc.chat.bean.GroupMessageBean;
 import com.alsc.chat.bean.MessageBean;
 import com.alsc.chat.bean.MessageResponse;
@@ -113,6 +114,9 @@ public class BaseApplication extends Application {
                 switch (cmd) {
                     case 2000: {//接收消息
                         MessageBean bean = new Gson().fromJson(message, MessageBean.class);
+                        if (TextUtils.isEmpty(bean.getMessageId())) {
+                            return;
+                        }
                         DatabaseOperate.getInstance().insertOrUpdate(bean);
                         EventBus.getDefault().post(bean);
                         break;
@@ -131,6 +135,9 @@ public class BaseApplication extends Application {
 
                     case 2100: {//接收群消息
                         GroupMessageBean bean = new Gson().fromJson(message, GroupMessageBean.class);
+                        if (TextUtils.isEmpty(bean.getMessageId())) {
+                            return;
+                        }
                         DatabaseOperate.getInstance().insertOrUpdate(bean);
                         EventBus.getDefault().post(bean);
                         break;
@@ -162,6 +169,9 @@ public class BaseApplication extends Application {
                                 return;
                             }
                             for (GroupMessageBean bean : list) {
+                                if (TextUtils.isEmpty(bean.getMessageId())) {
+                                    continue;
+                                }
                                 DatabaseOperate.getInstance().insertOrUpdate(bean);
                             }
                             break;
@@ -177,6 +187,9 @@ public class BaseApplication extends Application {
                                 return;
                             }
                             for (MessageBean bean : list) {
+                                if (TextUtils.isEmpty(bean.getMessageId())) {
+                                    continue;
+                                }
                                 DatabaseOperate.getInstance().insertOrUpdate(bean);
                             }
                             break;
