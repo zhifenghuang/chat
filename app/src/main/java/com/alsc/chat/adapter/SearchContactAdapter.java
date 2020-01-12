@@ -12,7 +12,7 @@ public class SearchContactAdapter extends BaseQuickAdapter<UserBean, BaseViewHol
     private Context mContext;
 
     public SearchContactAdapter(Context context) {
-        super(R.layout.item_friend);
+        super(R.layout.item_friend_2);
         mContext = context;
     }
 

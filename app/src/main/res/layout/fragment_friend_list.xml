@@ -1,28 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_ff_ff_ff"
+    android:background="@color/color_1d_26_37"
     android:orientation="vertical">
 
-
     <LinearLayout
-        android:id="@+id/llLetters"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginTop="18dp"
-        android:orientation="vertical"
-        android:paddingTop="30dp"></LinearLayout>
+        android:layout_width="match_parent"
+        android:layout_height="46dp"
+        android:orientation="horizontal"
+        android:paddingLeft="20dp">
+
+        <com.alsc.chat.view.RoundRectImageView
+            android:id="@+id/ivMyAvatar"
+            android:layout_width="46dp"
+            android:layout_height="46dp"
+            app:round_radius="23" />
+
+        <TextView
+            android:id="@+id/tvMyName"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:textColor="@color/color_fe_fe_fe"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_toLeftOf="@id/llLetters"
-        android:paddingRight="15dp"
-        android:paddingBottom="20dp" />
+        android:layout_marginTop="15dp"
+        android:paddingTop="10dp" />
 
 
-</RelativeLayout>
+</LinearLayout>

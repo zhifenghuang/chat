@@ -1,50 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/llParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:padding="10dp">
+    android:paddingLeft="19dp">
 
 
-    <ImageView
-        android:id="@+id/ivAvater"
-        android:layout_width="50dp"
-        android:layout_height="50dp" />
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_weight="1"
-        android:gravity="center_vertical"
-        android:orientation="vertical"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp">
-
-        <TextView
-            android:id="@+id/tvName"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:textColor="@color/color_00_00_00"
-            android:textSize="15sp" />
-
-        <TextView
-            android:id="@+id/tvMessage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:lines="1"
-            android:textColor="@color/color_00_00_00"
-            android:textSize="13sp" />
-
-    </LinearLayout>
+    <com.alsc.chat.view.RoundRectImageView
+        android:id="@+id/ivAvatar"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginTop="16dp"
+        app:round_radius="20" />
 
     <TextView
-        android:id="@+id/tvTime"
+        android:id="@+id/tvUnReadMsgNum"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/color_00_00_00"
+        android:layout_height="18dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="25dp"
+        android:background="@drawable/bg_chat_unread_msg"
+        android:minWidth="18dp"
+        android:textColor="@color/color_ff_ff_ff"
         android:textSize="13sp" />
 
 
-</LinearLayout>
+    <TextView
+        android:id="@+id/tvName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@id/tvUnReadMsgNum"
+        android:layout_toRightOf="@id/ivAvatar"
+        android:singleLine="true"
+        android:paddingLeft="15dp"
+        android:paddingTop="20dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/color_af_b9_d1"
+        android:textSize="15sp"
+        android:textStyle="bold" />
+
+    <TextView
+        android:id="@+id/tvMessage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/tvName"
+        android:layout_toLeftOf="@id/tvUnReadMsgNum"
+        android:layout_toRightOf="@id/ivAvatar"
+        android:singleLine="true"
+        android:paddingLeft="15dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/color_7c_84_98"
+        android:textSize="12sp" />
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginTop="16dp"
+        android:layout_below="@id/ivAvatar"
+        android:background="@color/color_7c_84_98"/>
+
+
+</RelativeLayout>

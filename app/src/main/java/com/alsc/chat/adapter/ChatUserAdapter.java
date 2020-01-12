@@ -28,14 +28,12 @@ public class ChatUserAdapter extends BaseQuickAdapter<ChatListFragment.ChatBean,
 
         if(chatBean.chatUser!=null) {
             helper.setText(R.id.tvName, chatBean.chatUser.getNickName())
-                    .setText(R.id.tvMessage, chatBean.lastMsg.getContent())
-                    .setText(R.id.tvTime, Utils.longToDate2(chatBean.lastMsg.getCreateTime()));
-            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.chatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvater));
+                    .setText(R.id.tvMessage, chatBean.lastMsg.getContent());
+        //    Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.chatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvatar));
         }else{
             helper.setText(R.id.tvName, chatBean.group.getName())
-                    .setText(R.id.tvMessage, chatBean.lastGroupMsg.getContent())
-                    .setText(R.id.tvTime, Utils.longToDate2(chatBean.lastGroupMsg.getCreateTime()));
-            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.group.getIcon(), (ImageView) helper.getView(R.id.ivAvater));
+                    .setText(R.id.tvMessage, chatBean.lastGroupMsg.getContent());
+      //      Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.group.getIcon(), (ImageView) helper.getView(R.id.ivAvatar));
         }
     }
 }

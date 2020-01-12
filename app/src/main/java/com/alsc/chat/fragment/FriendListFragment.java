@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.alsc.chat.R;
 import com.alsc.chat.activity.BaseActivity;
 import com.alsc.chat.adapter.FriendAdapter;
+import com.alsc.chat.bean.FriendItem;
 import com.alsc.chat.bean.UserBean;
 import com.alsc.chat.http.HttpMethods;
 import com.alsc.chat.http.HttpObserver;
@@ -38,9 +39,9 @@ public class FriendListFragment extends BaseFragment {
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
         getAdapter().bindToRecyclerView(recyclerView);
-        mFriendList=DataManager.getInstance().getFriends();
+        mFriendList = DataManager.getInstance().getFriends();
         getAdapter().setNewData(getNewList(mFriendList));
-        if(mFriendList!=null && !mFriendList.isEmpty()) {
+        if (mFriendList != null && !mFriendList.isEmpty()) {
             getFriendFromServer();
         }
     }
@@ -52,14 +53,18 @@ public class FriendListFragment extends BaseFragment {
                 @Override
                 public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                     if (position == 0) {
-                        gotoPager(ApplyFragment.class);
+                        //          gotoPager(ApplyFragment.class);
                     } else if (position == 1) {
-                        gotoPager(SearchContactFragment.class);
+                        gotoPager(ApplyFragment.class);
                     } else if (position == 2) {
+                        gotoPager(LabelFragment.class);
+                    } else if (position == 3) {
                         gotoPager(GroupListFragment.class);
-                    } else {
+                    } else if (position == 4) {
+                        gotoPager(StarFriendFragment.class);
+                    } else if (position > 5) {
                         Bundle bundle = new Bundle();
-                        bundle.putSerializable(Constants.BUNDLE_EXTRA, mAdapter.getItem(position));
+                        bundle.putSerializable(Constants.BUNDLE_EXTRA, mAdapter.getItem(position).getFriend());
                         gotoPager(UserInfoFragment.class, bundle);
                     }
                 }
@@ -70,7 +75,7 @@ public class FriendListFragment extends BaseFragment {
 
     public void onResume() {
         super.onResume();
-        if (mFriendList==null || mFriendList.isEmpty()) {
+        if (mFriendList == null || mFriendList.isEmpty()) {
             getFriendFromServer();
         }
     }
@@ -94,7 +99,7 @@ public class FriendListFragment extends BaseFragment {
             @Override
             public void onNext(ArrayList<UserBean> list, String msg) {
                 DataManager.getInstance().saveFriends(list);
-                mFriendList=list;
+                mFriendList = list;
                 if (getView() != null) {
                     getAdapter().setNewData(getNewList(list));
                 }
@@ -102,13 +107,41 @@ public class FriendListFragment extends BaseFragment {
         }, getActivity(), (BaseActivity) getActivity()));
     }
 
-    private ArrayList<UserBean> getNewList(ArrayList<UserBean> list) {
-        ArrayList<UserBean> newList = new ArrayList<>();
-        newList.add(null);
-        newList.add(null);
-        newList.add(null);
+    private ArrayList<FriendItem> getNewList(ArrayList<UserBean> list) {
+        ArrayList<FriendItem> newList = new ArrayList<>();
+        FriendItem item = new FriendItem();
+        item.setItemType(FriendItem.VIEW_TYPE_0);
+        newList.add(item);
+        item = new FriendItem();
+        item.setItemType(FriendItem.VIEW_TYPE_1);
+        item.setIconRes(R.drawable.chat_new_friend);
+        item.setName(getString(R.string.chat_new_friend));
+        newList.add(item);
+        item = new FriendItem();
+        item.setItemType(FriendItem.VIEW_TYPE_1);
+        item.setIconRes(R.drawable.chat_label);
+        item.setName(getString(R.string.chat_label));
+        newList.add(item);
+        item = new FriendItem();
+        item.setItemType(FriendItem.VIEW_TYPE_1);
+        item.setIconRes(R.drawable.chat_my_chat_group);
+        item.setName(getString(R.string.chat_my_chat_groups));
+        newList.add(item);
+        item = new FriendItem();
+        item.setItemType(FriendItem.VIEW_TYPE_1);
+        item.setIconRes(R.drawable.chat_star);
+        item.setName(getString(R.string.chat_star_friends));
+        newList.add(item);
+        item = new FriendItem();
+        item.setItemType(FriendItem.VIEW_TYPE_2);
+        newList.add(item);
         if (list != null) {
-            newList.addAll(list);
+            for (UserBean bean : list) {
+                item = new FriendItem();
+                item.setItemType(FriendItem.VIEW_TYPE_3);
+                item.setFriend(bean);
+                newList.add(item);
+            }
         }
         return newList;
     }

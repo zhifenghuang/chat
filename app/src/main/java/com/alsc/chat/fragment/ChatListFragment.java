@@ -42,6 +42,7 @@ public class ChatListFragment extends BaseFragment {
 
     @Override
     protected void onViewCreated(View view) {
+        setViewsOnClickListener(R.id.ivLeft, R.id.ivRight, R.id.ivMore);
         EventBus.getDefault().register(this);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
@@ -120,7 +121,18 @@ public class ChatListFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
-
+        switch (v.getId()) {
+            case R.id.ivLeft:
+                setBackground(R.id.ivLeft, R.drawable.bg_chat_yellow_radius_12);
+                setBackground(R.id.ivRight, 0);
+                break;
+            case R.id.ivRight:
+                setBackground(R.id.ivLeft, 0);
+                setBackground(R.id.ivRight, R.drawable.bg_chat_yellow_radius_12);
+                break;
+            case R.id.ivMore:
+                break;
+        }
     }
 
     public void onResume() {

@@ -14,7 +14,7 @@
         android:onClick="onBackClick"
         android:background="@color/color_00_00_00"
         android:scaleType="centerInside"
-        android:src="@drawable/chat_ic_back" />
+        android:src="@drawable/chat_back" />
 
     <ImageView
         android:id="@+id/ivAvater"
