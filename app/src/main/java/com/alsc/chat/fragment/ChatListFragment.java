@@ -3,6 +3,7 @@ package com.alsc.chat.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -20,6 +21,7 @@ import com.alsc.chat.http.HttpObserver;
 import com.alsc.chat.http.SubscriberOnNextListener;
 import com.alsc.chat.manager.DataManager;
 import com.alsc.chat.utils.Constants;
+import com.alsc.chat.utils.Utils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -52,6 +54,7 @@ public class ChatListFragment extends BaseFragment {
         mChatList = new ArrayList<>();
         mFriendList = DataManager.getInstance().getFriends();
         mGroupList = DataManager.getInstance().getGroups();
+
     }
 
     private ChatUserAdapter getAdapter() {
@@ -116,7 +119,12 @@ public class ChatListFragment extends BaseFragment {
 
     @Override
     public void updateUIText() {
-
+        UserBean userBean = DataManager.getInstance().getUser();
+        if (userBean == null) {
+            return;
+        }
+        Utils.loadImage(getActivity(),0,userBean.getAvatarUrl(),(ImageView)fv(R.id.ivMyAvatar));
+        setText(R.id.tvMyName,userBean.getNickName());
     }
 
     @Override

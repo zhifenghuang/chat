@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#1D2637</color>
+    <color name="colorPrimary">#FEFEFE</color>
     <color name="colorPrimaryDark">#1D2637</color>
-    <color name="colorAccent">#1D2637</color>
+    <color name="colorAccent">#AFB9D1</color>
 
     <color name="color_ff_ff_ff">#ffffff</color>
     <color name="color_ae_6c_f9">#AE6CF9</color>
@@ -24,5 +24,7 @@
     <color name="color_2a_34_4f">#2A344F</color>
     <color name="color_ff_b7_27">#FFB727</color>
     <color name="color_66_66_66">#666666</color>
+    <color name="color_32_3d_51">#323D51</color>
+
 
 </resources>

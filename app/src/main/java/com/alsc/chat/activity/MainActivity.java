@@ -2,6 +2,8 @@ package com.alsc.chat.activity;
 
 import android.os.Bundle;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -66,9 +68,24 @@ public class MainActivity extends BaseActivity {
     private void resetBottomBar(int currentPos) {
         LinearLayout llBottom = findViewById(R.id.llBottom);
         int count = llBottom.getChildCount();
+        ViewGroup itemView;
         for (int i = 0; i < count; ++i) {
-            ((TextView) llBottom.getChildAt(i)).setTextColor(ActivityCompat.getColor(this, i == currentPos ? R.color.color_00_00_00 : R.color.color_77_77_77));
+            itemView = (ViewGroup) llBottom.getChildAt(i);
+            (((ImageView) itemView.getChildAt(0))).setImageResource(getResIdByIndex(i, currentPos == i));
         }
+    }
+
+    private int getResIdByIndex(int index, boolean isCheck) {
+        int id = 0;
+        switch (index) {
+            case 0:
+                id = isCheck ? R.drawable.chat_message_selected : R.drawable.chat_message_unselected;
+                break;
+            case 1:
+                id = isCheck ? R.drawable.chat_friend_selected : R.drawable.chat_friend_unselected;
+                break;
+        }
+        return id;
     }
 
 

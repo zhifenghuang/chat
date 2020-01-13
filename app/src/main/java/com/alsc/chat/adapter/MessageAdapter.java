@@ -28,14 +28,15 @@ public class MessageAdapter extends BaseQuickAdapter<MessageBean, BaseViewHolder
     protected void convert(BaseViewHolder helper, MessageBean item) {
         if (item.isMySendMsg(mMyInfo.getUserId())) {
             helper.setGone(R.id.llLeft, false);
-            helper.setGone(R.id.llRight, true);
-            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + mMyInfo.getAvatarUrl(), (ImageView) helper.getView(R.id.ivRight));
+            helper.setGone(R.id.rlRight, true);
             helper.setText(R.id.tvRight, item.getContent());
+            Utils.loadImage(mContext, 0, mMyInfo.getAvatarUrl(), (ImageView) helper.getView(R.id.ivRight));
+
         } else {
             helper.setGone(R.id.llLeft, true);
-            helper.setGone(R.id.llRight, false);
-            Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + mChatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivLeft));
+            helper.setGone(R.id.rlRight, false);
             helper.setText(R.id.tvLeft, item.getContent());
+            Utils.loadImage(mContext, 0, mChatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivLeft));
         }
     }
 }

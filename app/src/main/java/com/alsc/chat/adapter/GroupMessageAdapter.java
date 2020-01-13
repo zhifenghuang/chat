@@ -31,13 +31,13 @@ public class GroupMessageAdapter extends BaseQuickAdapter<GroupMessageBean, Base
     protected void convert(BaseViewHolder helper, GroupMessageBean item) {
         if (item.isMySendMsg(mMyInfo.getUserId())) {
             helper.setGone(R.id.llLeft, false);
-            helper.setGone(R.id.llRight, true);
-            Utils.loadImage(mContext, R.mipmap.ic_launcher, "", (ImageView) helper.getView(R.id.ivRight));
+            helper.setGone(R.id.rlRight, true);
+    //        Utils.loadImage(mContext, R.mipmap.ic_launcher, "", (ImageView) helper.getView(R.id.ivRight));
             helper.setText(R.id.tvRight, item.getContent());
         } else {
             helper.setGone(R.id.llLeft, true);
-            helper.setGone(R.id.llRight, false);
-            Utils.loadImage(mContext, R.mipmap.ic_launcher, "", (ImageView) helper.getView(R.id.ivLeft));
+            helper.setGone(R.id.rlRight, false);
+      //      Utils.loadImage(mContext, R.mipmap.ic_launcher, "", (ImageView) helper.getView(R.id.ivLeft));
             helper.setText(R.id.tvLeft, item.getContent());
         }
     }

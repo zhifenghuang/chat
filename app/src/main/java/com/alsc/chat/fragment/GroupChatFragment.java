@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -23,39 +24,82 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
-public class GroupChatFragment extends BaseFragment {
+public class GroupChatFragment extends ChatFragment {
 
     private GroupMessageAdapter mAdapter;
     private UserBean mMyInfo;
     private GroupBean mGroup;
     private ArrayList<UserBean> mUsers;
 
-    @Override
-    protected int getLayoutId() {
-        return R.layout.fragment_group_chat;
-    }
 
     @Override
     protected void onViewCreated(View view) {
         EventBus.getDefault().register(this);
         mMyInfo = DataManager.getInstance().getUser();
         mGroup = (GroupBean) getArguments().getSerializable(Constants.BUNDLE_EXTRA);
-
-        setText(R.id.tvTitle, mGroup.getName());
-        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
+        setText(R.id.tvLeft, mGroup.getName());
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(linearLayoutManager);
         getAdapter().bindToRecyclerView(recyclerView);
-        setViewsOnClickListener(R.id.btnSend);
-        initMsgs();
+        init(view);
     }
 
-    private void initMsgs() {
-        ArrayList<GroupMessageBean> list = DatabaseOperate.getInstance().getGroupMsg(mMyInfo.getUserId(), mGroup.getGroupId());
+    @Override
+    public void initMsgs() {
+        ArrayList<GroupMessageBean> list = DatabaseOperate.getInstance().getGroupMsg(mMyInfo.getUserId(), mGroup.getGroupId(), 0l, Constants.PAGE_NUM);
+        Collections.reverse(list);
+        int size = list.size();
+        mHasMore = (size == Constants.PAGE_NUM);
+        if (size > 0) {
+            mLastMsgTime = list.get(0).getCreateTime();
+        }
         getAdapter().setNewData(list);
         scrollBottom();
+
+        if (!mHasMore) {
+            return;
+        }
+
+        final RecyclerView recyclerView = fv(R.id.recyclerView);
+        recyclerView.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                final LinearLayoutManager manager = (LinearLayoutManager) recyclerView.getLayoutManager();
+                recyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                    @Override
+                    public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+                        super.onScrollStateChanged(recyclerView, newState);
+                    }
+
+                    @Override
+                    public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                        super.onScrolled(recyclerView, dx, dy);
+                        if (mHasMore && manager.findFirstVisibleItemPosition() == 0) {
+                            getMoreMessage();
+                        }
+                    }
+                });
+            }
+        }, 200);
+    }
+
+    @Override
+    public void getMoreMessage() {
+        if (mHasMore) {
+            ArrayList<GroupMessageBean> list = DatabaseOperate.getInstance().getGroupMsg(mMyInfo.getUserId(), mGroup.getGroupId(), mLastMsgTime, Constants.PAGE_NUM);
+//            int size = list.size();
+            getAdapter().addData(0, list);
+            mHasMore = false;//(size == Constants.PAGE_NUM);
+//            if (size > 0) {
+//                mLastMsgTime = list.get(size - 1).getCreateTime();
+//                getAdapter().addData(0, list);
+//            }
+        }
+
     }
 
     private GroupMessageAdapter getAdapter() {
@@ -72,7 +116,7 @@ public class GroupChatFragment extends BaseFragment {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.btnSend) {
+        if (v.getId() == R.id.ivSend) {
             String text = getTextById(R.id.etChat);
             if (TextUtils.isEmpty(text.trim())) {
                 return;

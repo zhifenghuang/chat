@@ -5,6 +5,7 @@ import android.widget.ImageView;
 
 import com.alsc.chat.R;
 import com.alsc.chat.bean.FriendItem;
+import com.alsc.chat.utils.Utils;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 
@@ -36,6 +37,7 @@ public class FriendAdapter extends BaseMultiItemQuickAdapter<FriendItem, BaseVie
                 break;
             case FriendItem.VIEW_TYPE_3:
                 helper.setText(R.id.tvName,item.getFriend().getNickName());
+                Utils.loadImage(mContext, 0, item.getFriend().getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvatar));
                 break;
         }
     }

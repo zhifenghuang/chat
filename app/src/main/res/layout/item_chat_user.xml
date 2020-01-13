@@ -24,7 +24,8 @@
         android:background="@drawable/bg_chat_unread_msg"
         android:minWidth="18dp"
         android:textColor="@color/color_ff_ff_ff"
-        android:textSize="13sp" />
+        android:visibility="gone"
+        android:textSize="12sp" />
 
 
     <TextView

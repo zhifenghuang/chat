@@ -1,57 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingBottom="15dp"
+    android:paddingBottom="10dp"
+    android:paddingTop="10dp"
     android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:paddingBottom="20dp"
+        android:visibility="gone"
+        android:textColor="@color/color_7c_84_98"
+        android:textSize="11sp" />
 
     <LinearLayout
         android:id="@+id/llLeft"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingRight="50dp">
+        android:paddingLeft="15dp"
+        android:paddingRight="48dp">
 
-        <ImageView
+        <com.alsc.chat.view.RoundRectImageView
             android:id="@+id/ivLeft"
-            android:layout_width="40dp"
-            android:layout_height="40dp"></ImageView>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            app:round_radius="15"></com.alsc.chat.view.RoundRectImageView>
 
         <TextView
             android:id="@+id/tvLeft"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:minHeight="40dp"
-            android:paddingLeft="10dp"
-            android:textColor="@color/color_00_00_00"
-            android:textSize="14sp" />
+            android:layout_marginLeft="5dp"
+            android:paddingLeft="20dp"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:paddingRight="12dp"
+            android:textColor="@color/color_ff_ff_ff"
+            android:background="@drawable/bg_chat_left_message"
+            android:textSize="13sp" />
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/llRight"
+    <RelativeLayout
+        android:id="@+id/rlRight"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingLeft="50dp">
+        android:paddingLeft="48dp"
+        android:paddingRight="15dp">
+
+        <com.alsc.chat.view.RoundRectImageView
+            android:id="@+id/ivRight"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_alignParentRight="true"
+            app:round_radius="15"></com.alsc.chat.view.RoundRectImageView>
 
 
         <TextView
             android:id="@+id/tvRight"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:gravity="center_vertical|right"
-            android:minHeight="40dp"
-            android:paddingRight="10dp"
-            android:textColor="@color/color_00_00_00"
-            android:textSize="14sp" />
+            android:layout_marginRight="5dp"
+            android:paddingLeft="11dp"
+            android:paddingTop="11dp"
+            android:paddingBottom="11dp"
+            android:paddingRight="22dp"
+            android:textColor="@color/color_ff_ff_ff"
+            android:layout_toLeftOf="@id/ivRight"
+            android:background="@drawable/bg_chat_right_message"
+            android:textSize="13sp" />
 
-        <ImageView
-            android:id="@+id/ivRight"
-            android:layout_width="40dp"
-            android:layout_height="40dp"></ImageView>
-    </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

@@ -5,8 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_1d_26_37"
-    android:paddingTop="11dp"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="11dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,33 +18,35 @@
             android:id="@+id/ivMyAvatar"
             android:layout_width="46dp"
             android:layout_height="46dp"
-            app:round_radius="23"/>
+            app:round_radius="23" />
 
         <TextView
             android:id="@+id/tvMyName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:singleLine="true"
-            android:textSize="18sp"
             android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:paddingLeft="19dp"
+            android:singleLine="true"
             android:textColor="@color/color_fe_fe_fe"
+            android:textSize="18sp"
             android:textStyle="bold"
-            tools:text="Alice Brown"/>
+            tools:text="Alice Brown" />
 
         <RelativeLayout
             android:layout_width="72dp"
             android:layout_height="24dp"
-            android:orientation="horizontal"
+            android:layout_gravity="center_vertical"
             android:background="@drawable/bg_chat_gray_radius_12"
-            android:layout_gravity="center_vertical">
+            android:orientation="horizontal">
 
             <ImageView
                 android:id="@+id/ivLeft"
                 android:layout_width="41dp"
                 android:layout_height="match_parent"
+                android:background="@drawable/bg_chat_yellow_radius_12"
                 android:scaleType="centerInside"
-                android:background="@drawable/bg_chat_yellow_radius_12"/>
+                android:src="@drawable/chat_vector_left" />
 
 
             <ImageView
@@ -52,18 +54,20 @@
                 android:layout_width="41dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentRight="true"
-                android:scaleType="centerInside" />
+                android:scaleType="centerInside"
+                android:src="@drawable/chat_vector_right" />
         </RelativeLayout>
 
         <ImageView
             android:id="@+id/ivMore"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:scaleType="centerInside" />
+            android:paddingLeft="10dp"
+            android:paddingRight="10dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/chat_more_ver" />
 
     </LinearLayout>
 
@@ -72,7 +76,7 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingTop="9dp"
-        android:layout_marginTop="25dp"/>
+        android:layout_marginTop="25dp"
+        android:paddingTop="9dp" />
 
 </LinearLayout>

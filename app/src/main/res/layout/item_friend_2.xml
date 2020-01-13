@@ -6,16 +6,17 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="5dp"
-        android:background="@color/color_1c_25_36"/>
+        android:layout_height="25dp"
+        android:background="@color/color_1c_25_36" />
 
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:text="@string/chat_contact"
-        android:paddingLeft="25dp"
-        android:textColor="@color/color_7c_84_98"
         android:gravity="center_vertical"
+        android:paddingLeft="25dp"
+        android:paddingBottom="16dp"
+        android:text="@string/chat_contact"
+        android:textColor="@color/color_7c_84_98"
         android:textSize="16sp" />
 
 </LinearLayout>

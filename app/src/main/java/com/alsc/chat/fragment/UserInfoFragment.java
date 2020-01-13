@@ -23,10 +23,10 @@ public class UserInfoFragment extends BaseFragment {
     @Override
     protected void onViewCreated(View view) {
         mUserInfo = (UserBean) getArguments().getSerializable(Constants.BUNDLE_EXTRA);
-        setText(R.id.tvMemo, TextUtils.isEmpty(mUserInfo.getMemo()) ? mUserInfo.getNickName() : mUserInfo.getMemo());
         setText(R.id.tvNick, mUserInfo.getNickName());
-        setViewsOnClickListener(R.id.btnUpdateMemo, R.id.btnOpeartor);
-        Utils.loadImage(getActivity(), R.mipmap.ic_launcher, Constants.BASE_URL + mUserInfo.getAvatarUrl(), (ImageView) view.findViewById(R.id.ivAvater));
+        setText(R.id.tvId,"ID:"+mUserInfo.getContactId());
+        setViewsOnClickListener(R.id.tvAddMemo, R.id.tvMore,R.id.llSendMsg);
+        Utils.loadImage(getActivity(), R.mipmap.ic_launcher, mUserInfo.getAvatarUrl(), (ImageView) view.findViewById(R.id.ivAvatar));
     }
 
     @Override
@@ -37,9 +37,11 @@ public class UserInfoFragment extends BaseFragment {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btnUpdateMemo:
+            case R.id.tvAddMemo:
                 break;
-            case R.id.btnOpeartor:
+            case R.id.tvMore:
+                break;
+            case R.id.llSendMsg:
                 Bundle bundle = new Bundle();
                 bundle.putSerializable(Constants.BUNDLE_EXTRA, mUserInfo);
                 gotoPager(ChatFragment.class, bundle);

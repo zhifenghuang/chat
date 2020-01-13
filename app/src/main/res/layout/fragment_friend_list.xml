@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_1d_26_37"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingTop="11dp">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -25,6 +26,7 @@
             android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:singleLine="true"
+            android:paddingLeft="19dp"
             android:textColor="@color/color_fe_fe_fe"
             android:textSize="18sp"
             android:textStyle="bold" />

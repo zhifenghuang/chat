@@ -14,29 +14,64 @@
     <LinearLayout
         android:id="@+id/llBottom"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
+        android:layout_height="55dp"
         android:orientation="horizontal"
+        android:background="@color/color_2a_34_4f"
         android:paddingTop="3dp">
 
 
-        <TextView
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="聊天"
-            android:textColor="@color/color_81_84_ad"
-            android:textSize="15sp" />
+            android:orientation="vertical">
 
 
-        <TextView
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/chat_message_selected"/>
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="1dp"
+                android:layout_height="1dp"
+                android:layout_centerHorizontal="true"/>
+
+            <TextView
+                android:id="@+id/tvTotalUnReadMsgNum"
+                android:layout_width="wrap_content"
+                android:layout_height="18dp"
+                android:background="@drawable/bg_chat_unread_msg"
+                android:minWidth="18dp"
+                android:textColor="@color/color_ff_ff_ff"
+                android:layout_toRightOf="@id/view"
+                android:layout_marginLeft="2dp"
+                android:visibility="gone"
+                android:layout_marginTop="7dp"
+                android:textSize="12sp" />
+
+        </RelativeLayout>
+
+
+
+        <RelativeLayout
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
-            android:text="好友"
-            android:textColor="@color/color_81_84_ad"
-            android:textSize="15sp" />
+            android:orientation="vertical">
+
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@drawable/chat_friend_unselected"/>
+
+        </RelativeLayout>
 
     </LinearLayout>
 

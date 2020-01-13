@@ -3,6 +3,7 @@ package com.alsc.chat.fragment;
 import android.os.Bundle;
 import android.view.View;
 
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -32,6 +33,9 @@ public class GroupListFragment extends BaseFragment {
 
     @Override
     protected void onViewCreated(View view) {
+        setViewVisible(R.id.tvLeft);
+        view.findViewById(R.id.topView).setBackgroundColor(ContextCompat.getColor(getActivity(),R.color.color_25_2e_3f));
+        setText(R.id.tvLeft, R.string.chat_group_chat);
         RecyclerView recyclerView = view.findViewById(R.id.recyclerView);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getActivity());
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);

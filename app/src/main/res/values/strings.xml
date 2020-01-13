@@ -26,4 +26,11 @@
     <string name="chat_label_member">成员</string>
     <string name="chat_delete_label">删除标签</string>
 
+
+    <string name="chat_add_memo">添加备注</string>
+    <string name="chat_more_info">更多信息</string>
+    <string name="chat_send_msg">发送消息</string>
+
+    <string name="chat_group_chat">群聊</string>
+
 </resources>

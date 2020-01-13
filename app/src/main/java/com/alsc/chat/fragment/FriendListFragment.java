@@ -3,6 +3,7 @@ package com.alsc.chat.fragment;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageView;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +18,7 @@ import com.alsc.chat.http.HttpObserver;
 import com.alsc.chat.http.SubscriberOnNextListener;
 import com.alsc.chat.manager.DataManager;
 import com.alsc.chat.utils.Constants;
+import com.alsc.chat.utils.Utils;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 
 import java.util.ArrayList;
@@ -55,13 +57,13 @@ public class FriendListFragment extends BaseFragment {
                     if (position == 0) {
                         //          gotoPager(ApplyFragment.class);
                     } else if (position == 1) {
-                        gotoPager(ApplyFragment.class);
+            //            gotoPager(ApplyFragment.class);
                     } else if (position == 2) {
                         gotoPager(LabelFragment.class);
                     } else if (position == 3) {
                         gotoPager(GroupListFragment.class);
                     } else if (position == 4) {
-                        gotoPager(StarFriendFragment.class);
+              //          gotoPager(StarFriendFragment.class);
                     } else if (position > 5) {
                         Bundle bundle = new Bundle();
                         bundle.putSerializable(Constants.BUNDLE_EXTRA, mAdapter.getItem(position).getFriend());
@@ -82,7 +84,12 @@ public class FriendListFragment extends BaseFragment {
 
     @Override
     public void updateUIText() {
-
+        UserBean userBean = DataManager.getInstance().getUser();
+        if (userBean == null) {
+            return;
+        }
+        Utils.loadImage(getActivity(),0,userBean.getAvatarUrl(),(ImageView)fv(R.id.ivMyAvatar));
+        setText(R.id.tvMyName,userBean.getNickName());
     }
 
     @Override

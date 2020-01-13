@@ -26,14 +26,14 @@ public class ChatUserAdapter extends BaseQuickAdapter<ChatListFragment.ChatBean,
     @Override
     protected void convert(BaseViewHolder helper, ChatListFragment.ChatBean chatBean) {
 
-        if(chatBean.chatUser!=null) {
+        if (chatBean.chatUser != null) {
             helper.setText(R.id.tvName, chatBean.chatUser.getNickName())
                     .setText(R.id.tvMessage, chatBean.lastMsg.getContent());
-        //    Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.chatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvatar));
-        }else{
+            Utils.loadImage(mContext, 0, chatBean.chatUser.getAvatarUrl(), (ImageView) helper.getView(R.id.ivAvatar));
+        } else {
             helper.setText(R.id.tvName, chatBean.group.getName())
                     .setText(R.id.tvMessage, chatBean.lastGroupMsg.getContent());
-      //      Utils.loadImage(mContext, R.mipmap.ic_launcher, Constants.BASE_URL + chatBean.group.getIcon(), (ImageView) helper.getView(R.id.ivAvatar));
+            Utils.loadImage(mContext, 0, chatBean.group.getIcon(), (ImageView) helper.getView(R.id.ivAvatar));
         }
     }
 }
