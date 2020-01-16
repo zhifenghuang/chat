@@ -81,4 +81,20 @@
         <attr name="wheelview_lineSpacingMultiplier" format="float"/>
     </declare-styleable>
 
+
+    <!--进度框属性-->
+
+    <!--msg字体颜色-->
+    <attr name="commonProgressDialogMsgTextColor" format="color|reference" />
+    <!--msg字体大小-->
+    <attr name="commonProgressDialogTextSize" format="dimension" />
+    <!--ProgressBar动画-->
+    <attr name="commonProgressDialogProgressDrawable" format="reference" />
+    <!--ProgressDialog中ProgressBar的大小,宽高相同-->
+    <attr name="commonProgressDialogProgressWidth" format="dimension" />
+    <!--ProgressDialog中ProgressBar外框的大小,宽高相同-->
+    <attr name="commonProgressDialogProgressContainerWidth" format="dimension" />
+    <!--ProgressDialog中文本的底部间距-->
+    <attr name="commonProgressDialogBottomSpace" format="dimension" />
+
 </resources>

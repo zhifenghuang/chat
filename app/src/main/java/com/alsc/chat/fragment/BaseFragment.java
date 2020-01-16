@@ -31,7 +31,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     // 标示是否第一次执行onStart页面
     private boolean mIsFirstOnStart = true;
     private DisplayMetrics mDisplaymetrics;
-    private InputMethodManager mInputMethodManager;
 
 
     protected abstract int getLayoutId();
@@ -87,10 +86,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
     }
 
     protected InputMethodManager getInputMethodManager() {
-        if (mInputMethodManager == null) {
-            mInputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        }
-        return mInputMethodManager;
+        return (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
     }
 
 
@@ -140,22 +136,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
         if (getActivity() != null && getActivity().getCurrentFocus() != null) {
             in.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
         }
-    }
-
-    /**
-     * 关闭loading的页面
-     */
-    public void hideLoadingDialog() {
-        ((BaseActivity) getActivity()).hideLoadingDialog();
-    }
-
-
-    public void showLoadingDialog() {
-        ((BaseActivity) getActivity()).showLoadingDialog();
-    }
-
-    public void showLoadingDialog(String text) {
-        ((BaseActivity) getActivity()).showLoadingDialog(text);
     }
 
     protected <VT extends View> VT fv(View parent, int id) {
@@ -209,9 +189,7 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
      * @param bundle
      */
     public void gotoPager(final Class<?> pagerClass, final Bundle bundle) {
-
         if (getActivity() instanceof BaseActivity) {
-
             ((BaseActivity) getActivity()).gotoPager(pagerClass, bundle);
         }
     }
@@ -303,10 +281,6 @@ public abstract class BaseFragment extends Fragment implements View.OnClickListe
             ((WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE)).getDefaultDisplay().getMetrics(mDisplaymetrics);
         }
         return mDisplaymetrics;
-    }
-
-    public void onBackKeyClick() {
-
     }
 
     public void onEditKeyListener(EditText et) {

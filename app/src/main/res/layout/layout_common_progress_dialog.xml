@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?><!--进度条-->
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="80dp"
+    android:layout_height="80dp"
+    android:background="@drawable/shape_progress_bar_bg">
+
+    <ProgressBar
+        android:id="@+id/pd_loading"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent"
+        android:indeterminateDuration="1000"
+        android:indeterminateOnly="true"
+        android:indeterminateTint="@color/colorPrimaryDark"
+        android:maxWidth="40dp"
+        android:maxHeight="40dp" />
+
+</RelativeLayout>

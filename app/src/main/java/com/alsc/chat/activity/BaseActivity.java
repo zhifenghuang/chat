@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,12 +20,15 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import com.alsc.chat.R;
+import com.alsc.chat.dialog.CommonProgressDialog;
 import com.alsc.chat.fragment.BaseFragment;
 import com.alsc.chat.fragment.MyDialogFragment;
 import com.alsc.chat.http.OnHttpErrorListener;
 import com.alsc.chat.utils.NetUtil;
 import com.alsc.chat.utils.Utils;
+
 import org.json.JSONException;
+
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -45,6 +47,8 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
 
     private static boolean isNotComeFromBG;  //改为静态的，防止多个Activity会调用背景到前景的方法
 
+    private CommonProgressDialog mProgressDialog;
+
 
     private static ArrayList<String> mActivityNameList;  //当mActivityNameList size为0时表示到了后台
     private static final ArrayList<BaseActivity> mActivityList = new ArrayList<>();
@@ -59,33 +63,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
          */
         isNotComeFromBG = !isComeFromSplash();
         mActivityList.add(this);
-
-    }
-
-    public void showLoadingDialog() {
-        showLoadingDialog("", null, true);
-    }
-
-    public void showLoadingDialog(String text) {
-        showLoadingDialog(text, null, true);
-    }
-
-    /**
-     * 显示Loading 页面， listener可为空
-     *
-     * @param strTitle
-     * @param listener
-     * @param isCancelByUser:用户是否可点击屏幕，或者Back键关掉对话框
-     */
-    public void showLoadingDialog(String strTitle, final DialogInterface.OnCancelListener listener, boolean isCancelByUser) {
-
-    }
-
-
-    /**
-     * 关闭loading的页面
-     */
-    public void hideLoadingDialog() {
 
     }
 
@@ -330,6 +307,10 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
     public void onDestroy() {
         super.onDestroy();
         mActivityList.remove(this);
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
+        mProgressDialog = null;
     }
 
     public void finishAllOtherActivity() {
@@ -404,6 +385,20 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
 
     public void showToast(String str) {
         Toast.makeText(this, str, Toast.LENGTH_LONG).show();
+    }
+
+    public void showLoading() {
+        if (mProgressDialog == null) {
+            mProgressDialog = new CommonProgressDialog(this);
+            mProgressDialog.setCanceledOnTouchOutside(false);
+        }
+        mProgressDialog.show();
+    }
+
+    public void hideLoading() {
+        if (mProgressDialog != null && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+        }
     }
 
 }

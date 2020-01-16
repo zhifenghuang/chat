@@ -6,6 +6,7 @@ import android.os.Looper;
 import android.os.Message;
 import android.util.Log;
 
+import com.alsc.chat.activity.BaseActivity;
 import com.alsc.chat.bean.BasicResponse;
 
 import io.reactivex.Observer;
@@ -49,10 +50,10 @@ public class HttpObserver implements Observer, ProgressCancelListener {
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case SHOW_PROGRESS_DIALOG:
-
+                    ((BaseActivity) context).showLoading();
                     break;
                 case DISMISS_PROGRESS_DIALOG:
-
+                    ((BaseActivity) context).hideLoading();
                     break;
             }
         }
