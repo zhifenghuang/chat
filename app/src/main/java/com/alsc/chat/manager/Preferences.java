@@ -1,8 +1,6 @@
 package com.alsc.chat.manager;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-
 /**
  * Created by gigabud on 17-5-4.
  */
@@ -11,8 +9,6 @@ public class Preferences {
     private static final String TAG = "Preferences";
     private static Preferences mConfig = null;
     private SharedPreferences mSettings;
-
-    private Context mContext;
 
     public static Preferences getInstacne() {
         if (mConfig == null) {
@@ -30,16 +26,11 @@ public class Preferences {
 
     private SharedPreferences getSettings() {
         if (mSettings == null) {
-            mSettings = mContext.getSharedPreferences("Config", 0);
+            mSettings = ConfigManager.getInstance().getContext().getSharedPreferences("Config", 0);
         }
         return mSettings;
     }
 
-    public void setContext(Context context) {
-        if(mContext==null) {
-            mContext = context.getApplicationContext();
-        }
-    }
 
 
     public void setValues(String key, String value) {

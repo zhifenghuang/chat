@@ -1,10 +1,9 @@
 package com.alsc.chat.http;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.alsc.chat.bean.UserBean;
+import com.alsc.chat.manager.ConfigManager;
 import com.alsc.chat.manager.DataManager;
 import com.alsc.chat.utils.Constants;
 import com.alsc.chat.utils.NetUtil;
@@ -46,8 +45,6 @@ public class HttpMethods {
     private Retrofit mRetrofit;
     private static final int DEFAULT_TIMEOUT = 10;
     private static HttpMethods INSTANCE;
-
-    private Context mContext;
 
     private HttpMethods() {
         //手动创建一个OkHttpClient并设置超时时间
@@ -101,12 +98,6 @@ public class HttpMethods {
             }
         }
         return INSTANCE;
-    }
-
-    public void setContext(Context context) {
-        if (mContext == null) {
-            mContext = context.getApplicationContext();
-        }
     }
 
     private String getBaseUrl() {
@@ -254,10 +245,46 @@ public class HttpMethods {
         toSubscribe(observable, observer);
     }
 
-    public void getGroups(int currentPage, int pageSize,HttpObserver observer) {
+    public void getGroups(int currentPage, int pageSize, HttpObserver observer) {
         HttpService httpService = mRetrofit.create(HttpService.class);
         Observable observable = httpService.getGroups(RequestBody.create(MediaType.parse("text/plain"), String.valueOf(currentPage))
                 , RequestBody.create(MediaType.parse("text/plain"), String.valueOf(pageSize)));
+        toSubscribe(observable, observer);
+    }
+
+    /**
+     * 修改群成员群内备注
+     *
+     * @param groupId
+     * @param memo
+     * @param editUserId
+     * @param observer
+     */
+    public void updateGroupMemo(String groupId, String memo, String editUserId, HttpObserver observer) {
+        HttpService httpService = mRetrofit.create(HttpService.class);
+        Observable observable;
+        if (TextUtils.isEmpty(editUserId)) {
+            observable = httpService.updateGroupMemo(RequestBody.create(MediaType.parse("text/plain"), groupId)
+                    , RequestBody.create(MediaType.parse("text/plain"), memo));
+        } else {
+            observable = httpService.updateGroupMemo(RequestBody.create(MediaType.parse("text/plain"), groupId)
+                    , RequestBody.create(MediaType.parse("text/plain"), memo),
+                    RequestBody.create(MediaType.parse("text/plain"), editUserId));
+        }
+        toSubscribe(observable, observer);
+    }
+
+    /**
+     * 邀请加入群组
+     *
+     * @param groupId
+     * @param inviteId
+     * @param observer
+     */
+    public void inviteToGroup(String groupId, String inviteId, HttpObserver observer) {
+        HttpService httpService = mRetrofit.create(HttpService.class);
+        Observable observable = httpService.inviteToGroup(RequestBody.create(MediaType.parse("text/plain"), groupId),
+                RequestBody.create(MediaType.parse("text/plain"), inviteId));
         toSubscribe(observable, observer);
     }
 
@@ -266,7 +293,7 @@ public class HttpMethods {
         o.retry(2, new Predicate<Throwable>() {
             @Override
             public boolean test(@NonNull Throwable throwable) throws Exception {
-                return NetUtil.isConnected(mContext) &&
+                return NetUtil.isConnected(ConfigManager.getInstance().getContext()) &&
                         (throwable instanceof SocketTimeoutException ||
                                 throwable instanceof ConnectException ||
                                 throwable instanceof ConnectTimeoutException ||

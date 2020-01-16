@@ -8,6 +8,7 @@ import com.alsc.chat.BaseApplication;
 import com.alsc.chat.bean.GroupBean;
 import com.alsc.chat.bean.GroupMessageBean;
 import com.alsc.chat.bean.MessageBean;
+import com.alsc.chat.manager.ConfigManager;
 
 import java.util.ArrayList;
 
@@ -24,22 +25,17 @@ public class DatabaseOperate extends DBOperate {
 
     private static DatabaseOperate mDBManager = null;
 
-    private static Context mContext;
-
 
     private DatabaseOperate(SQLiteDatabase db) {
         super(db);
     }
 
-    public static void setContext(Context context) {
-        mContext = context;
-    }
 
     public static DatabaseOperate getInstance() {
         if (mDBManager == null) {
             synchronized (TAG) {
                 if (mDBManager == null) {
-                    DatabaseHelper databaseHelper = new DatabaseHelper(mContext, DB_NAME);
+                    DatabaseHelper databaseHelper = new DatabaseHelper(ConfigManager.getInstance().getContext(), DB_NAME);
                     SQLiteDatabase db = databaseHelper.getWritableDatabase();
                     mDBManager = new DatabaseOperate(db);
 
@@ -84,12 +80,12 @@ public class DatabaseOperate extends DBOperate {
         return list;
     }
 
-    public ArrayList<GroupMessageBean> getGroupMsg(long myId, long groupId,long time, int limit) {
+    public ArrayList<GroupMessageBean> getGroupMsg(long myId, long groupId, long time, int limit) {
         String sql;
         if (time == 0l) {
             sql = String.format("select * from group_message where owerId=%d and groupId=%d order by createTime desc limit 0,%d",
-                    myId, groupId,limit);
-        }else{
+                    myId, groupId, limit);
+        } else {
             sql = String.format("select * from group_message where owerId=%d and groupId=%d and createTime<%d order by createTime desc",
                     myId, groupId, time);
         }

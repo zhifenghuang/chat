@@ -56,7 +56,7 @@ public interface HttpService {
     获取群好友列表
      */
     @Multipart
-    @POST("api/v1/group/getGroupUsers")
+    @POST("api/v1/group/users")
     Observable<BasicResponse<UserBean>> getGroupUsers(@Part("groupId") RequestBody groupId);
 
     /*
@@ -65,22 +65,48 @@ public interface HttpService {
     @Multipart
     @POST("api/v1/group/updateGroup")
     Observable<BasicResponse> updateGroup(@Part("groupId") RequestBody groupId,
-                                                    @Part("name") RequestBody name,
-                                                    @Part("ownerId") RequestBody ownerId,
-                                                    @Part("notice") RequestBody notice,
-                                                    @Part("introduction") RequestBody introduction);
+                                          @Part("name") RequestBody name,
+                                          @Part("ownerId") RequestBody ownerId,
+                                          @Part("notice") RequestBody notice,
+                                          @Part("introduction") RequestBody introduction);
+
+
+    /*
+   修改群成员群内备注
+   */
+    @Multipart
+    @POST("api/v1/group/memo")
+    Observable<BasicResponse> updateGroupMemo(@Part("groupId") RequestBody groupId,
+                                              @Part("memo") RequestBody memo,
+                                              @Part("editUserId") RequestBody editUserId);
+
+    /*
+    修改群成员群内备注
+   */
+    @Multipart
+    @POST("api/v1/group/memo")
+    Observable<BasicResponse> updateGroupMemo(@Part("groupId") RequestBody groupId,
+                                              @Part("memo") RequestBody memo);
 
     /*
     创建群
     */
     @POST("api/v1/group/create")
-    Observable<BasicResponse<UserBean>> createGroup(@Body HashMap<String,Object> map);
+    Observable<BasicResponse<UserBean>> createGroup(@Body HashMap<String, Object> map);
 
     /*
-我的群组
- */
+     我的群组
+    */
     @Multipart
     @POST("api/v1/group/mine")
     Observable<BasicResponse<ArrayList<GroupBean>>> getGroups(@Part("currentPage") RequestBody currentPage,
                                                               @Part("pageSize") RequestBody pageSize);
+
+    /*
+     邀请加入群组
+    */
+    @Multipart
+    @POST("api/v1/group/invite")
+    Observable<BasicResponse> inviteToGroup(@Part("groupId") RequestBody groupId,
+                                            @Part("inviteId") RequestBody inviteId);
 }

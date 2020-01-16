@@ -10,6 +10,7 @@ import com.alsc.chat.bean.MessageBean;
 import com.alsc.chat.bean.MessageResponse;
 import com.alsc.chat.db.DatabaseOperate;
 import com.alsc.chat.http.HttpMethods;
+import com.alsc.chat.manager.ConfigManager;
 import com.alsc.chat.manager.DataManager;
 import com.alsc.chat.manager.Preferences;
 import com.alsc.chat.utils.Constants;
@@ -34,11 +35,8 @@ public class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        DatabaseOperate.setContext(this);
+        ConfigManager.getInstance().setContext(this);
         DatabaseOperate.getInstance();
-        HttpMethods.getInstance().setContext(this);
-        Preferences.getInstacne().setContext(this);
-
 
         String token = DataManager.getInstance().getToken();
         if (!TextUtils.isEmpty(token)) {
