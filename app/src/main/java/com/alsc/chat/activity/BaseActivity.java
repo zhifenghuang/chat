@@ -130,10 +130,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             requestPermission(0,
-                    Manifest.permission.READ_PHONE_STATE,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION);
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
         }
     }
 
@@ -203,7 +200,7 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
                 public void initView(View view) {
                     view.findViewById(R.id.tv1).setVisibility(View.GONE);
                     ((TextView) view.findViewById(R.id.tv2)).setText(message);
-                    ((TextView) view.findViewById(R.id.btn2)).setText("Ok");
+                    ((TextView) view.findViewById(R.id.btn2)).setText(getString(R.string.chat_ok));
                     mErrorDialog.setDialogViewsOnClickListener(view, R.id.btn2);
                 }
 
@@ -213,7 +210,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
                 }
             });
             mErrorDialog.show(getSupportFragmentManager(), "MyDialogFragment");
-
             mErrorDialog.setOnDismiss(new MyDialogFragment.IDismissListener() {
                 @Override
                 public void onDismiss() {
@@ -405,7 +401,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
             if (isMediaDocument(uri)) { // MediaProvider
                 // 使用':'分割
                 String id = documentId.split(":")[1];
-
                 String selection = MediaStore.Images.Media._ID + "=?";
                 String[] selectionArgs = {id};
                 filePath = getDataColumn(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection, selectionArgs);

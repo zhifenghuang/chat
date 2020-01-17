@@ -1,7 +1,5 @@
 package com.alsc.chat.bean;
 
-import com.chad.library.adapter.base.entity.MultiItemEntity;
-
 import java.io.Serializable;
 
 public class UserBean implements Serializable{
