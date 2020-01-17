@@ -12,25 +12,42 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.alsc.chat.R;
+import com.alsc.chat.activity.BaseActivity;
 import com.alsc.chat.adapter.MessageAdapter;
+import com.alsc.chat.bean.FileBean;
 import com.alsc.chat.bean.MessageBean;
 import com.alsc.chat.bean.UserBean;
 import com.alsc.chat.db.DatabaseOperate;
 import com.alsc.chat.manager.DataManager;
 import com.alsc.chat.utils.Constants;
 import com.google.gson.Gson;
+import com.upyun.library.common.Params;
+import com.upyun.library.common.UploadEngine;
+import com.upyun.library.listener.UpCompleteListener;
+import com.upyun.library.listener.UpProgressListener;
+import com.upyun.library.utils.UpYunUtils;
 import com.zhangke.websocket.WebSocketHandler;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
+import okhttp3.Response;
 
 public class ChatFragment extends BaseFragment {
+
+    private static final String TAG = "Chat";
 
     private MessageAdapter mAdapter;
     private UserBean mMyInfo;
@@ -130,7 +147,7 @@ public class ChatFragment extends BaseFragment {
             ArrayList<MessageBean> list = DatabaseOperate.getInstance().getUserChatMsg(mMyInfo.getUserId(), mChatUser.getContactId(),
                     mLastMsgTime, Constants.PAGE_NUM);
             getAdapter().addData(0, list);
-        //    int size = list.size();
+            //    int size = list.size();
             mHasMore = false;//(size == Constants.PAGE_NUM);
 //            if (size > 0) {
 //                mLastMsgTime = list.get(size - 1).getCreateTime();
@@ -172,7 +189,25 @@ public class ChatFragment extends BaseFragment {
             EventBus.getDefault().post(msg);
         } else if (id == R.id.ivRight) {
 
+        } else if (id == R.id.ivAdd) {
+            ((BaseActivity) getActivity()).showSelectPhotoTypeDialog();
         }
+    }
+
+    protected void sendImageMsg(String url) {
+        if (TextUtils.isEmpty(url)) {
+            return;
+        }
+        MessageBean msg = new MessageBean();
+        msg.setCmd(2000);
+        msg.setFromId(mMyInfo.getUserId());
+        msg.setToId(mChatUser.getContactId());
+        msg.setMsgType(2);
+        msg.setUrl(url);
+        WebSocketHandler.getDefault().send(msg.toJson());
+        setText(R.id.etChat, "");
+        DatabaseOperate.getInstance().insert(msg);
+        EventBus.getDefault().post(msg);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -180,6 +215,13 @@ public class ChatFragment extends BaseFragment {
         if (getView() != null && message != null) {
             getAdapter().addData(message);
             scrollBottom();
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onReceiveFile(FileBean fileBean) {
+        if (getView() != null && fileBean != null) {
+            formUpload(fileBean);
         }
     }
 
@@ -199,5 +241,52 @@ public class ChatFragment extends BaseFragment {
     public void onDestroyView() {
         super.onDestroyView();
         EventBus.getDefault().unregister(this);
+    }
+
+
+    private void formUpload(FileBean fileBean) {
+        File file = fileBean.getFile();
+        if (file == null || !file.exists()) {
+            return;
+        }
+        final Map<String, Object> paramsMap = new HashMap<>();
+        paramsMap.put(Params.BUCKET, Constants.SPACE);
+        paramsMap.put(Params.SAVE_KEY, String.format(Constants.IMAGE_SAVE_PATH, file.getName()));
+        paramsMap.put(Params.CONTENT_LENGTH, file.length());
+        paramsMap.put(Params.RETURN_URL, "httpbin.org/post");
+        UpProgressListener progressListener = new UpProgressListener() {
+            @Override
+            public void onRequestProgress(long bytesWrite, long contentLength) {
+                //            bp_form.setProgress((int) ((100 * bytesWrite) / contentLength));
+            }
+        };
+
+        //结束回调，不可为空
+        UpCompleteListener completeListener = new UpCompleteListener() {
+            @Override
+            public void onComplete(boolean isSuccess, Response response, Exception error) {
+                try {
+                    String result = null;
+                    if (response != null) {
+                        result = response.body().string();
+                    } else if (error != null) {
+                        result = error.toString();
+                    }
+                    if (isSuccess) {
+                        try {
+                            JSONObject object = new JSONObject(result);
+                            sendImageMsg(object.optString("url"));
+                        } catch (Exception e) {
+
+                        }
+                    }
+                    Log.e("aaaaaaaaaa", "isSuccess:" + isSuccess + " result:" + result);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+            }
+        };
+        UploadEngine.getInstance().formUpload(file, paramsMap, Constants.OPERATER, UpYunUtils.md5(Constants.PASSWORD), completeListener, progressListener);
     }
 }

@@ -33,4 +33,9 @@
 
     <string name="chat_group_chat">群聊</string>
 
+    <string name="chat_take_photo">拍照</string>
+    <string name="chat_select_from_album">手机相册选择</string>
+    <string name="chat_cancel">取消</string>
+    <string name="chat_ok">确定</string>
+
 </resources>

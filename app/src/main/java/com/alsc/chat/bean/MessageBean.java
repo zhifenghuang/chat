@@ -16,7 +16,7 @@ public class MessageBean extends IDBItemOperation {
     private String messageId;
     private long fromId;
     private long toId;
-    private int msgType;   //0表示文字消息，
+    private int msgType;   //1表示文字消息，2表示图片消息，3表示语音消息
     private String content;
     private String url;
     private Object fileInfo;

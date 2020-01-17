@@ -3,10 +3,15 @@ package com.alsc.chat.activity;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -23,12 +28,16 @@ import com.alsc.chat.R;
 import com.alsc.chat.dialog.CommonProgressDialog;
 import com.alsc.chat.fragment.BaseFragment;
 import com.alsc.chat.fragment.MyDialogFragment;
+import com.alsc.chat.fragment.PhotoPreviewFragment;
 import com.alsc.chat.http.OnHttpErrorListener;
+import com.alsc.chat.utils.Constants;
 import com.alsc.chat.utils.NetUtil;
+import com.alsc.chat.utils.PermissionUtils;
 import com.alsc.chat.utils.Utils;
 
 import org.json.JSONException;
 
+import java.io.File;
 import java.net.ConnectException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
@@ -41,8 +50,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
 
     private DisplayMetrics mDisplaymetrics;
 
-    private boolean mIsFullScreen;
-
     private MyDialogFragment mErrorDialog;
 
     private static boolean isNotComeFromBG;  //改为静态的，防止多个Activity会调用背景到前景的方法
@@ -52,6 +59,11 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
 
     private static ArrayList<String> mActivityNameList;  //当mActivityNameList size为0时表示到了后台
     private static final ArrayList<BaseActivity> mActivityList = new ArrayList<>();
+
+    private static final int CAMERA_REQUEST_CODE = 10001;
+    private static final int ALBUM_REQUEST_CODE = 10002;
+
+    private static final int ASK_CAMERA_PERMISSION = 102;
 
 
     @Override
@@ -345,6 +357,122 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        getVisibleFragment().onReturnResult(requestCode, resultCode, data);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == CAMERA_REQUEST_CODE) {
+                super.onActivityResult(requestCode, resultCode, data);
+                try {
+                    String filePath = Utils.getSaveFilePath(BaseActivity.this, "output.jpg");
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.BUNDLE_EXTRA, filePath);
+                    gotoPager(PhotoPreviewFragment.class, bundle);
+                } catch (Exception e) {
+
+                }
+            } else if (requestCode == ALBUM_REQUEST_CODE) {
+                try {
+                    String filePath;
+                    int sdkVersion = Build.VERSION.SDK_INT;
+                    if (sdkVersion >= 19) { // api >= 19
+                        filePath = getRealPathFromUriAboveApi19(data.getData());
+                    } else { // api < 19
+                        filePath = getRealPathFromUriBelowAPI19(data.getData());
+                    }
+                    Bundle bundle = new Bundle();
+                    bundle.putString(Constants.BUNDLE_EXTRA, filePath);
+                    gotoPager(PhotoPreviewFragment.class, bundle);
+                } catch (Exception e) {
+
+                }
+            }
+        }
+    }
+
+    /**
+     * 适配api19及以上,根据uri获取图片的绝对路径
+     *
+     * @param uri 图片的Uri
+     * @return 如果Uri对应的图片存在, 那么返回该图片的绝对路径, 否则返回null
+     */
+    @SuppressLint("NewApi")
+    private String getRealPathFromUriAboveApi19(Uri uri) {
+        String filePath = null;
+        if (DocumentsContract.isDocumentUri(this, uri)) {
+            // 如果是document类型的 uri, 则通过document id来进行处理
+            String documentId = DocumentsContract.getDocumentId(uri);
+            if (isMediaDocument(uri)) { // MediaProvider
+                // 使用':'分割
+                String id = documentId.split(":")[1];
+
+                String selection = MediaStore.Images.Media._ID + "=?";
+                String[] selectionArgs = {id};
+                filePath = getDataColumn(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, selection, selectionArgs);
+            } else if (isDownloadsDocument(uri)) { // DownloadsProvider
+                Uri contentUri = ContentUris.withAppendedId(Uri.parse("content://downloads/public_downloads"), Long.valueOf(documentId));
+                filePath = getDataColumn(contentUri, null, null);
+            }
+        } else if ("content".equalsIgnoreCase(uri.getScheme())) {
+            // 如果是 content 类型的 Uri
+            filePath = getDataColumn(uri, null, null);
+        } else if ("file".equals(uri.getScheme())) {
+            // 如果是 file 类型的 Uri,直接获取图片对应的路径
+            filePath = uri.getPath();
+        }
+        return filePath;
+    }
+
+    /**
+     * 适配api19以下(不包括api19),根据uri获取图片的绝对路径
+     *
+     * @param uri 图片的Uri
+     * @return 如果Uri对应的图片存在, 那么返回该图片的绝对路径, 否则返回null
+     */
+    private String getRealPathFromUriBelowAPI19(Uri uri) {
+        return getDataColumn(uri, null, null);
+    }
+
+    /**
+     * 获取数据库表中的 _data 列，即返回Uri对应的文件路径
+     *
+     * @return
+     */
+    private String getDataColumn(Uri uri, String selection, String[] selectionArgs) {
+        String path = null;
+
+        String[] projection = new String[]{MediaStore.Images.Media.DATA};
+        Cursor cursor = null;
+        try {
+            cursor = getContentResolver().query(uri, projection, selection, selectionArgs, null);
+            if (cursor != null && cursor.moveToFirst()) {
+                int columnIndex = cursor.getColumnIndexOrThrow(projection[0]);
+                path = cursor.getString(columnIndex);
+            }
+        } catch (Exception e) {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return path;
+    }
+
+    /**
+     * @param uri the Uri to check
+     * @return Whether the Uri authority is MediaProvider
+     */
+    private boolean isMediaDocument(Uri uri) {
+        return "com.android.providers.media.documents".equals(uri.getAuthority());
+    }
+
+    /**
+     * @param uri the Uri to check
+     * @return Whether the Uri authority is DownloadsProvider
+     */
+    private boolean isDownloadsDocument(Uri uri) {
+        return "com.android.providers.downloads.documents".equals(uri.getAuthority());
+    }
+
 
     @Override
     public synchronized void onServerError(int errorCode, String errorMsg) {
@@ -357,25 +485,6 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
 
     public void onBackClick(View view) {
         goBack();
-    }
-
-    public void setScreenFull(boolean isFull) {
-        if (mIsFullScreen == isFull) {
-            return;
-        }
-
-        if (isFull) {
-            WindowManager.LayoutParams params = getWindow().getAttributes();
-            params.flags |= WindowManager.LayoutParams.FLAG_FULLSCREEN;
-            getWindow().setAttributes(params);
-            mIsFullScreen = true;
-        } else {
-            WindowManager.LayoutParams params = getWindow().getAttributes();
-            params.flags &= (~WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            getWindow().setAttributes(params);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-            mIsFullScreen = false;
-        }
     }
 
 
@@ -399,6 +508,48 @@ public abstract class BaseActivity extends AppCompatActivity implements OnHttpEr
         if (mProgressDialog != null && mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
         }
+    }
+
+    public void goSystemCameraPage() {
+        if (!PermissionUtils.isGrantPermission(this,
+                Manifest.permission.CAMERA)) {
+            requestPermission(ASK_CAMERA_PERMISSION, Manifest.permission.CAMERA);
+        } else {
+            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            File file = new File(Utils.getSaveFilePath(BaseActivity.this, "output.jpg"));
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(file));
+            startActivityForResult(intent, CAMERA_REQUEST_CODE);
+        }
+    }
+
+
+    public void showSelectPhotoTypeDialog() {
+        if (!PermissionUtils.isGrantPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            requestPermission(0,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE);
+            return;
+        }
+        final MyDialogFragment dialogFragment = new MyDialogFragment();
+        dialogFragment.setLayout(R.layout.layout_select_photo_type);
+        dialogFragment.setOnMyDialogListener(new MyDialogFragment.OnMyDialogListener() {
+            @Override
+            public void initView(View view) {
+                dialogFragment.setDialogViewsOnClickListener(view, R.id.btnTakePhoto, R.id.btnAlbum, R.id.btnCancel);
+            }
+
+            @Override
+            public void onViewClick(int viewId) {
+                if (viewId == R.id.btnTakePhoto) {
+                    goSystemCameraPage();
+
+                } else if (viewId == R.id.btnAlbum) {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");//相片类型
+                    startActivityForResult(intent, ALBUM_REQUEST_CODE);
+                }
+            }
+        });
+        dialogFragment.show(getSupportFragmentManager(), "MyDialogFragment");
     }
 
 }
